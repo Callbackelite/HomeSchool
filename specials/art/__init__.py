@@ -1,0 +1,1 @@
+# specials/art - __init__.py

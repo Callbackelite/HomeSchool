@@ -1,0 +1,17 @@
+2025-07-31 15:29:40,246 - apscheduler.scheduler - INFO - Added job "scheduled_backup" to job store "default"
+2025-07-31 15:29:42,170 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://10.1.23.19:5000
+2025-07-31 15:29:42,170 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-07-31 15:29:42,172 - werkzeug - INFO -  * Restarting with stat
+2025-07-31 15:29:43,336 - apscheduler.scheduler - INFO - Added job "scheduled_backup" to job store "default"
+2025-07-31 15:29:43,371 - werkzeug - WARNING -  * Debugger is active!
+2025-07-31 15:29:43,373 - werkzeug - INFO -  * Debugger PIN: 145-052-169
+2025-07-31 15:29:44,771 - werkzeug - INFO - 127.0.0.1 - - [31/Jul/2025 15:29:44] "GET / HTTP/1.1" 200 -
+2025-07-31 15:29:45,489 - werkzeug - INFO - 127.0.0.1 - - [31/Jul/2025 15:29:45] "GET / HTTP/1.1" 200 -
+2025-07-31 15:29:45,653 - werkzeug - INFO - 127.0.0.1 - - [31/Jul/2025 15:29:45] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+2025-07-31 15:29:53,402 - werkzeug - INFO - 127.0.0.1 - - [31/Jul/2025 15:29:53] "GET /login HTTP/1.1" 200 -
+2025-07-31 15:30:11,590 - werkzeug - INFO - 127.0.0.1 - - [31/Jul/2025 15:30:11] "[32mPOST /login HTTP/1.1[0m" 302 -
+2025-07-31 15:30:11,610 - werkzeug - INFO - 127.0.0.1 - - [31/Jul/2025 15:30:11] "GET /admin/dashboard HTTP/1.1" 200 -
+2025-07-31 15:30:41,873 - werkzeug - INFO - 127.0.0.1 - - [31/Jul/2025 15:30:41] "GET /admin/dashboard HTTP/1.1" 200 -

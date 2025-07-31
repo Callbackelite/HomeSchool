@@ -1,0 +1,1 @@
+# system/avatars - __init__.py

@@ -1,0 +1,625 @@
+{% extends "base.html" %}
+{% block title %}Upload Content - Savage Homeschool OS{% endblock %}
+
+{% block extra_css %}
+<style>
+.upload-section {
+    background: white;
+    border-radius: 10px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.upload-area {
+    border: 2px dashed #dee2e6;
+    border-radius: 10px;
+    padding: 3rem;
+    text-align: center;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.upload-area:hover {
+    border-color: var(--primary-color);
+    background-color: #f8f9fa;
+}
+
+.upload-area.dragover {
+    border-color: var(--primary-color);
+    background-color: #e3f2fd;
+}
+
+.file-preview {
+    max-width: 100%;
+    max-height: 200px;
+    border-radius: 8px;
+    margin-top: 1rem;
+}
+
+.api-integration {
+    background: #f8f9fa;
+    border-radius: 10px;
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+.api-card {
+    background: white;
+    border-radius: 8px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    transition: all 0.3s ease;
+}
+
+.api-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+}
+
+.api-icon {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+}
+
+.upload-progress {
+    display: none;
+    margin-top: 1rem;
+}
+
+.progress-bar-animated {
+    animation: progress-bar-stripes 1s linear infinite;
+}
+
+@keyframes progress-bar-stripes {
+    0% { background-position: 1rem 0; }
+    100% { background-position: 0 0; }
+}
+
+.content-preview {
+    background: #f8f9fa;
+    border-radius: 8px;
+    padding: 1rem;
+    margin-top: 1rem;
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.preview-text {
+    font-family: monospace;
+    font-size: 0.9rem;
+    white-space: pre-wrap;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="welcome-message">
+        <h1>Upload Content</h1>
+        <p class="lead">Upload educational content from Education.com or other sources</p>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-8">
+            <!-- File Upload Section -->
+            <div class="upload-section">
+                <h3><i class="fas fa-upload me-2"></i>Upload Files</h3>
+                <p class="text-muted">Upload PDFs, Word documents, or images from Education.com</p>
+                
+                <form id="uploadForm" enctype="multipart/form-data">
+                    <div class="upload-area" onclick="document.getElementById('fileInput').click()">
+                        <i class="fas fa-cloud-upload-alt fa-3x text-muted mb-3"></i>
+                        <h5>Drop files here or click to browse</h5>
+                        <p class="text-muted">Supports PDF, DOC, DOCX, JPG, PNG</p>
+                        <input type="file" id="fileInput" name="file" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png" style="display: none;">
+                    </div>
+                    
+                    <div class="upload-progress" id="uploadProgress">
+                        <div class="progress">
+                            <div class="progress-bar progress-bar-striped progress-bar-animated" 
+                                 role="progressbar" style="width: 0%"></div>
+                        </div>
+                        <small class="text-muted">Processing file...</small>
+                    </div>
+                    
+                    <div class="content-preview" id="contentPreview" style="display: none;">
+                        <h6>Content Preview:</h6>
+                        <div class="preview-text" id="previewText"></div>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Content Configuration -->
+            <div class="upload-section">
+                <h3><i class="fas fa-cog me-2"></i>Content Configuration</h3>
+                
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label for="subject" class="form-label">Subject</label>
+                            <select class="form-select" id="subject" name="subject" required>
+                                <option value="">Select Subject</option>
+                                <option value="math">Mathematics</option>
+                                <option value="reading">Reading</option>
+                                <option value="writing">Writing</option>
+                                <option value="science">Science</option>
+                                <option value="history">History</option>
+                                <option value="spelling">Spelling</option>
+                                <option value="logic">Critical Thinking & Logic</option>
+                                <option value="art">Art</option>
+                                <option value="music">Music</option>
+                                <option value="pe">Physical Education</option>
+                                <option value="typing">Typing</option>
+                                <option value="tech">Technology Skills</option>
+                                <option value="coding">Coding</option>
+                                <option value="finance">Financial Literacy</option>
+                                <option value="sign_language">Sign Language</option>
+                                <option value="foreign_language">Foreign Language</option>
+                                <option value="engineering">Engineering</option>
+                                <option value="cooking">Cooking</option>
+                                <option value="homesteading">Homesteading</option>
+                                <option value="public_speaking">Public Speaking</option>
+                                <option value="character">Character Building</option>
+                                <option value="emotional">Emotional Intelligence</option>
+                                <option value="faith">Faith & Bible Study</option>
+                                <option value="gratitude">Gratitude & Mindfulness</option>
+                                <option value="life_skills">Life Skills</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label for="gradeLevel" class="form-label">Grade Level</label>
+                            <select class="form-select" id="gradeLevel" name="grade_level" required>
+                                <option value="">Select Grade</option>
+                                <option value="K">Kindergarten</option>
+                                <option value="1">1st Grade</option>
+                                <option value="2">2nd Grade</option>
+                                <option value="3">3rd Grade</option>
+                                <option value="4">4th Grade</option>
+                                <option value="5">5th Grade</option>
+                                <option value="6">6th Grade</option>
+                                <option value="7">7th Grade</option>
+                                <option value="8">8th Grade</option>
+                                <option value="9">9th Grade</option>
+                                <option value="10">10th Grade</option>
+                                <option value="11">11th Grade</option>
+                                <option value="12">12th Grade</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label for="difficultyLevel" class="form-label">Difficulty Level</label>
+                            <select class="form-select" id="difficultyLevel" name="level" required>
+                                <option value="">Select Level</option>
+                                <option value="1">Level 1 - Beginner</option>
+                                <option value="2">Level 2 - Basic</option>
+                                <option value="3">Level 3 - Intermediate</option>
+                                <option value="4">Level 4 - Advanced</option>
+                                <option value="5">Level 5 - Expert</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label for="lessonType" class="form-label">Lesson Type</label>
+                            <select class="form-select" id="lessonType" name="lesson_type" required>
+                                <option value="">Select Type</option>
+                                <option value="lesson">Lesson</option>
+                                <option value="quiz">Quiz</option>
+                                <option value="practice">Practice</option>
+                                <option value="project">Project</option>
+                                <option value="review">Review</option>
+                                <option value="assessment">Assessment</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="mb-3">
+                    <label for="customTitle" class="form-label">Custom Title (Optional)</label>
+                    <input type="text" class="form-control" id="customTitle" name="custom_title" 
+                           placeholder="Leave blank for auto-generated title">
+                </div>
+                
+                <div class="mb-3">
+                    <label for="description" class="form-label">Description (Optional)</label>
+                    <textarea class="form-control" id="description" name="description" rows="3" 
+                              placeholder="Add a description for this content"></textarea>
+                </div>
+                
+                <div class="form-check mb-3">
+                    <input class="form-check-input" type="checkbox" id="autoGenerate" name="auto_generate" checked>
+                    <label class="form-check-label" for="autoGenerate">
+                        Auto-generate lesson components (summary, practice, quiz)
+                    </label>
+                </div>
+                
+                <div class="form-check mb-3">
+                    <input class="form-check-input" type="checkbox" id="assignToChildren" name="assign_to_children">
+                    <label class="form-check-label" for="assignToChildren">
+                        Automatically assign to children in this grade level
+                    </label>
+                </div>
+                
+                <button type="button" class="btn btn-primary" onclick="processUpload()">
+                    <i class="fas fa-magic me-1"></i>Process & Create Lesson
+                </button>
+            </div>
+        </div>
+        
+        <div class="col-lg-4">
+            <!-- API Integration -->
+            <div class="api-integration">
+                <h4><i class="fas fa-plug me-2"></i>Auto-Generate from APIs</h4>
+                <p class="text-muted">Create lessons automatically from external sources</p>
+                
+                <div class="api-card" onclick="generateFromAPI('khan')">
+                    <div class="text-center">
+                        <div class="api-icon text-primary">
+                            <i class="fas fa-graduation-cap"></i>
+                        </div>
+                        <h6>Khan Academy</h6>
+                        <p class="text-muted small">Videos, exercises, and interactive content</p>
+                    </div>
+                </div>
+                
+                <div class="api-card" onclick="generateFromAPI('nasa')">
+                    <div class="text-center">
+                        <div class="api-icon text-info">
+                            <i class="fas fa-rocket"></i>
+                        </div>
+                        <h6>NASA</h6>
+                        <p class="text-muted small">Space science, astronomy, and Earth imagery</p>
+                    </div>
+                </div>
+                
+                <div class="api-card" onclick="generateFromAPI('openlibrary')">
+                    <div class="text-center">
+                        <div class="api-icon text-success">
+                            <i class="fas fa-book"></i>
+                        </div>
+                        <h6>OpenLibrary</h6>
+                        <p class="text-muted small">Reading recommendations and book content</p>
+                    </div>
+                </div>
+                
+                <div class="api-card" onclick="generateFromAPI('wordsapi')">
+                    <div class="text-center">
+                        <div class="api-icon text-warning">
+                            <i class="fas fa-language"></i>
+                        </div>
+                        <h6>WordsAPI</h6>
+                        <p class="text-muted small">Vocabulary, definitions, and spelling</p>
+                    </div>
+                </div>
+                
+                <div class="api-card" onclick="generateFromAPI('ck12')">
+                    <div class="text-center">
+                        <div class="api-icon text-danger">
+                            <i class="fas fa-flask"></i>
+                        </div>
+                        <h6>CK-12</h6>
+                        <p class="text-muted small">STEM simulations and practice problems</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Recent Uploads -->
+            <div class="card">
+                <div class="card-header">
+                    <h5><i class="fas fa-history me-2"></i>Recent Uploads</h5>
+                </div>
+                <div class="card-body">
+                    {% if recent_uploads %}
+                        <div class="recent-uploads">
+                            {% for upload in recent_uploads[:5] %}
+                            <div class="upload-item d-flex align-items-center mb-2">
+                                <i class="fas fa-file-alt text-primary me-2"></i>
+                                <div class="flex-grow-1">
+                                    <div class="fw-bold">{{ upload.title }}</div>
+                                    <small class="text-muted">{{ upload.subject }} - Grade {{ upload.grade_level }}</small>
+                                </div>
+                                <span class="badge bg-success">{{ upload.status }}</span>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <p class="text-muted text-center">No recent uploads</p>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <!-- Upload Statistics -->
+            <div class="card mt-3">
+                <div class="card-header">
+                    <h5><i class="fas fa-chart-bar me-2"></i>Upload Stats</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row text-center">
+                        <div class="col-6">
+                            <div class="stat-item">
+                                <div class="stat-value">{{ total_uploads|default(0) }}</div>
+                                <div class="stat-label">Total Uploads</div>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="stat-item">
+                                <div class="stat-value">{{ successful_uploads|default(0) }}</div>
+                                <div class="stat-label">Successful</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- API Generation Modal -->
+<div class="modal fade" id="apiModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Generate from API</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="apiForm">
+                    <div class="mb-3">
+                        <label for="apiSource" class="form-label">API Source</label>
+                        <select class="form-select" id="apiSource" name="api_source" required>
+                            <option value="">Select API</option>
+                            <option value="khan">Khan Academy</option>
+                            <option value="nasa">NASA</option>
+                            <option value="openlibrary">OpenLibrary</option>
+                            <option value="wordsapi">WordsAPI</option>
+                            <option value="ck12">CK-12 Foundation</option>
+                        </select>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="apiTopic" class="form-label">Topic/Query</label>
+                        <input type="text" class="form-control" id="apiTopic" name="topic" 
+                               placeholder="e.g., 'fractions', 'solar system', 'vocabulary words'" required>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="apiSubject" class="form-label">Subject</label>
+                                <select class="form-select" id="apiSubject" name="subject" required>
+                                    <option value="">Select Subject</option>
+                                    <option value="math">Mathematics</option>
+                                    <option value="reading">Reading</option>
+                                    <option value="writing">Writing</option>
+                                    <option value="science">Science</option>
+                                    <option value="history">History</option>
+                                    <option value="spelling">Spelling</option>
+                                    <option value="logic">Critical Thinking & Logic</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="apiGrade" class="form-label">Grade Level</label>
+                                <select class="form-select" id="apiGrade" name="grade_level" required>
+                                    <option value="">Select Grade</option>
+                                    <option value="K">Kindergarten</option>
+                                    <option value="1">1st Grade</option>
+                                    <option value="2">2nd Grade</option>
+                                    <option value="3">3rd Grade</option>
+                                    <option value="4">4th Grade</option>
+                                    <option value="5">5th Grade</option>
+                                    <option value="6">6th Grade</option>
+                                    <option value="7">7th Grade</option>
+                                    <option value="8">8th Grade</option>
+                                    <option value="9">9th Grade</option>
+                                    <option value="10">10th Grade</option>
+                                    <option value="11">11th Grade</option>
+                                    <option value="12">12th Grade</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="apiLevel" class="form-label">Difficulty Level</label>
+                        <select class="form-select" id="apiLevel" name="level" required>
+                            <option value="">Select Level</option>
+                            <option value="1">Level 1 - Beginner</option>
+                            <option value="2">Level 2 - Basic</option>
+                            <option value="3">Level 3 - Intermediate</option>
+                            <option value="4">Level 4 - Advanced</option>
+                            <option value="5">Level 5 - Expert</option>
+                        </select>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" onclick="generateFromAPI()">Generate Lesson</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+let selectedFile = null;
+let currentApiSource = null;
+
+// File upload handling
+document.getElementById('fileInput').addEventListener('change', function(e) {
+    const file = e.target.files[0];
+    if (file) {
+        selectedFile = file;
+        showFilePreview(file);
+        showUploadProgress();
+    }
+});
+
+// Drag and drop functionality
+const uploadArea = document.querySelector('.upload-area');
+
+uploadArea.addEventListener('dragover', function(e) {
+    e.preventDefault();
+    uploadArea.classList.add('dragover');
+});
+
+uploadArea.addEventListener('dragleave', function(e) {
+    e.preventDefault();
+    uploadArea.classList.remove('dragover');
+});
+
+uploadArea.addEventListener('drop', function(e) {
+    e.preventDefault();
+    uploadArea.classList.remove('dragover');
+    
+    const files = e.dataTransfer.files;
+    if (files.length > 0) {
+        selectedFile = files[0];
+        document.getElementById('fileInput').files = files;
+        showFilePreview(files[0]);
+        showUploadProgress();
+    }
+});
+
+function showFilePreview(file) {
+    const preview = document.getElementById('contentPreview');
+    const previewText = document.getElementById('previewText');
+    
+    if (file.type.startsWith('image/')) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            previewText.innerHTML = `<img src="${e.target.result}" class="file-preview" alt="File preview">`;
+            preview.style.display = 'block';
+        };
+        reader.readAsDataURL(file);
+    } else {
+        // For text-based files, show a preview
+        previewText.textContent = `File: ${file.name} (${(file.size / 1024).toFixed(1)} KB)`;
+        preview.style.display = 'block';
+    }
+}
+
+function showUploadProgress() {
+    document.getElementById('uploadProgress').style.display = 'block';
+    const progressBar = document.querySelector('.progress-bar');
+    progressBar.style.width = '0%';
+    
+    // Simulate progress
+    let progress = 0;
+    const interval = setInterval(() => {
+        progress += 10;
+        progressBar.style.width = progress + '%';
+        
+        if (progress >= 100) {
+            clearInterval(interval);
+            setTimeout(() => {
+                document.getElementById('uploadProgress').style.display = 'none';
+            }, 1000);
+        }
+    }, 200);
+}
+
+function processUpload() {
+    if (!selectedFile) {
+        alert('Please select a file first.');
+        return;
+    }
+    
+    const formData = new FormData();
+    formData.append('file', selectedFile);
+    formData.append('subject', document.getElementById('subject').value);
+    formData.append('grade_level', document.getElementById('gradeLevel').value);
+    formData.append('level', document.getElementById('difficultyLevel').value);
+    formData.append('lesson_type', document.getElementById('lessonType').value);
+    formData.append('custom_title', document.getElementById('customTitle').value);
+    formData.append('description', document.getElementById('description').value);
+    formData.append('auto_generate', document.getElementById('autoGenerate').checked);
+    formData.append('assign_to_children', document.getElementById('assignToChildren').checked);
+    
+    fetch('/upload', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            showNotification('Lesson created successfully!', 'success');
+            setTimeout(() => {
+                window.location.href = '/admin/dashboard';
+            }, 2000);
+        } else {
+            showNotification('Error creating lesson: ' + data.message, 'error');
+        }
+    })
+    .catch(error => {
+        showNotification('Upload failed: ' + error.message, 'error');
+    });
+}
+
+function generateFromAPI(source = null) {
+    if (source) {
+        currentApiSource = source;
+        document.getElementById('apiSource').value = source;
+    }
+    
+    $('#apiModal').modal('show');
+}
+
+function generateFromAPI() {
+    const formData = new FormData(document.getElementById('apiForm'));
+    
+    fetch('/api/generate-lesson', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            showNotification('Lesson generated successfully!', 'success');
+            $('#apiModal').modal('hide');
+            setTimeout(() => {
+                window.location.href = '/admin/dashboard';
+            }, 2000);
+        } else {
+            showNotification('Error generating lesson: ' + data.message, 'error');
+        }
+    })
+    .catch(error => {
+        showNotification('Generation failed: ' + error.message, 'error');
+    });
+}
+
+function showNotification(message, type) {
+    const notification = document.createElement('div');
+    notification.className = `alert alert-${type === 'success' ? 'success' : 'danger'} alert-dismissible fade show`;
+    notification.style.position = 'fixed';
+    notification.style.top = '20px';
+    notification.style.right = '20px';
+    notification.style.zIndex = '9999';
+    notification.innerHTML = `
+        ${message}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    `;
+    
+    document.body.appendChild(notification);
+    
+    setTimeout(() => {
+        if (notification.parentNode) {
+            notification.parentNode.removeChild(notification);
+        }
+    }, 5000);
+}
+</script>
+{% endblock %} 

@@ -1,0 +1,338 @@
+{% extends "base.html" %}
+
+{% block title %}My Dashboard - Savage Homeschool OS{% endblock %}
+
+{% block content %}
+<!-- Welcome Message -->
+<div class="welcome-message">
+    <h1><i class="fas fa-sun"></i> Good Morning, {{ current_user.username }}!</h1>
+    <p class="mb-0">Ready to crush today's lessons and earn some XP? Let's go! 🚀</p>
+</div>
+
+<!-- User Stats -->
+<div class="row">
+    <div class="col-md-3">
+        <div class="dashboard-stats text-center">
+            <i class="fas fa-star" style="font-size: 2rem; color: var(--warning-color);"></i>
+            <h3 class="mt-2">{{ total_xp }}</h3>
+            <p class="text-muted mb-0">Total XP</p>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="dashboard-stats text-center">
+            <i class="fas fa-trophy" style="font-size: 2rem; color: var(--success-color);"></i>
+            <h3 class="mt-2">{{ completed_lessons }}</h3>
+            <p class="text-muted mb-0">Lessons Completed</p>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="dashboard-stats text-center">
+            <i class="fas fa-fire" style="font-size: 2rem; color: var(--accent-color);"></i>
+            <h3 class="mt-2">{{ current_streak }}</h3>
+            <p class="text-muted mb-0">Day Streak</p>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="dashboard-stats text-center">
+            <i class="fas fa-medal" style="font-size: 2rem; color: var(--info-color);"></i>
+            <h3 class="mt-2">{{ badges_earned }}</h3>
+            <p class="text-muted mb-0">Badges Earned</p>
+        </div>
+    </div>
+</div>
+
+<!-- Today's Lessons -->
+<div class="row mt-4">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h5><i class="fas fa-calendar-day"></i> Today's Lessons</h5>
+            </div>
+            <div class="card-body">
+                {% if lessons %}
+                    <div class="row">
+                        {% for lesson in lessons %}
+                        <div class="col-md-6 mb-3">
+                            <div class="lesson-card">
+                                <div class="d-flex align-items-center mb-3">
+                                    <div class="subject-icon">
+                                        {% if lesson.subject.name.lower() == 'math' %}
+                                            <i class="fas fa-calculator math-icon"></i>
+                                        {% elif lesson.subject.name.lower() == 'reading' %}
+                                            <i class="fas fa-book-open reading-icon"></i>
+                                        {% elif lesson.subject.name.lower() == 'science' %}
+                                            <i class="fas fa-flask science-icon"></i>
+                                        {% elif lesson.subject.name.lower() == 'history' %}
+                                            <i class="fas fa-landmark history-icon"></i>
+                                        {% elif lesson.subject.name.lower() == 'art' %}
+                                            <i class="fas fa-palette art-icon"></i>
+                                        {% elif lesson.subject.name.lower() == 'music' %}
+                                            <i class="fas fa-music music-icon"></i>
+                                        {% else %}
+                                            <i class="fas fa-graduation-cap"></i>
+                                        {% endif %}
+                                    </div>
+                                    <div class="ms-3">
+                                        <h6 class="mb-1">{{ lesson.title }}</h6>
+                                        <small class="text-muted">{{ lesson.subject.name }} - Level {{ lesson.level }}</small>
+                                    </div>
+                                </div>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span class="xp-badge">+{{ lesson.xp_value }} XP</span>
+                                    <a href="{{ url_for('view_lesson', lesson_id=lesson.id) }}" class="btn btn-primary btn-sm">
+                                        <i class="fas fa-play"></i> Start
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="text-center py-4">
+                        <i class="fas fa-check-circle" style="font-size: 3rem; color: var(--success-color);"></i>
+                        <h5 class="mt-3">All Done for Today!</h5>
+                        <p class="text-muted">Great job completing all your lessons!</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    
+    <!-- Progress & Rewards -->
+    <div class="col-md-4">
+        <!-- Progress Overview -->
+        <div class="card mb-3">
+            <div class="card-header">
+                <h6><i class="fas fa-chart-line"></i> My Progress</h6>
+            </div>
+            <div class="card-body">
+                {% for subject in subjects %}
+                <div class="mb-3">
+                    <div class="d-flex justify-content-between">
+                        <span>{{ subject.name }}</span>
+                        <span>{{ subject.progress }}%</span>
+                    </div>
+                    <div class="progress">
+                        <div class="progress-bar" role="progressbar" style="width: {{ subject.progress }}%"></div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        
+        <!-- Recent Rewards -->
+        <div class="card">
+            <div class="card-header">
+                <h6><i class="fas fa-gift"></i> Recent Rewards</h6>
+            </div>
+            <div class="card-body">
+                {% if rewards %}
+                    {% for reward in rewards[:5] %}
+                    <div class="d-flex align-items-center mb-2">
+                        <i class="fas fa-star text-warning me-2"></i>
+                        <div>
+                            <small class="fw-bold">{{ reward.reward_name }}</small><br>
+                            <small class="text-muted">{{ reward.description }}</small>
+                        </div>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <p class="text-muted text-center">Complete lessons to earn rewards!</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Quick Actions -->
+<div class="row mt-4">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h6><i class="fas fa-book"></i> Reading Log</h6>
+            </div>
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <span>Books Read This Month</span>
+                    <span class="badge bg-primary">{{ books_read }}</span>
+                </div>
+                <a href="#" class="btn btn-outline-primary btn-sm">
+                    <i class="fas fa-plus"></i> Add Book
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h6><i class="fas fa-shopping-cart"></i> Reward Shop</h6>
+            </div>
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <span>Available XP</span>
+                    <span class="xp-badge">{{ total_xp }}</span>
+                </div>
+                <a href="#" class="btn btn-outline-success btn-sm">
+                    <i class="fas fa-store"></i> Browse Shop
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Break Timer -->
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h6><i class="fas fa-clock"></i> Break Timer</h6>
+            </div>
+            <div class="card-body text-center">
+                <div class="row">
+                    <div class="col-md-4">
+                        <button class="btn btn-outline-primary" onclick="startBreak(5)">
+                            <i class="fas fa-coffee"></i> 5 Min Break
+                        </button>
+                    </div>
+                    <div class="col-md-4">
+                        <button class="btn btn-outline-warning" onclick="startBreak(10)">
+                            <i class="fas fa-walking"></i> 10 Min Break
+                        </button>
+                    </div>
+                    <div class="col-md-4">
+                        <button class="btn btn-outline-success" onclick="startBreak(15)">
+                            <i class="fas fa-dumbbell"></i> 15 Min Break
+                        </button>
+                    </div>
+                </div>
+                <div id="break-timer" class="mt-3" style="display: none;">
+                    <h3 id="timer-display">00:00</h3>
+                    <button class="btn btn-danger btn-sm" onclick="stopBreak()">
+                        <i class="fas fa-stop"></i> Stop Break
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Floating Action Button -->
+<button class="floating-action-btn" onclick="showQuickActions()" title="Quick Actions" aria-label="Open quick actions menu">
+    <i class="fas fa-plus"></i>
+</button>
+
+<!-- Quick Actions Modal -->
+<div class="modal fade" id="quickActionsModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Quick Actions</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-6 mb-3">
+                        <button class="btn btn-outline-primary w-100" onclick="openReadingLog()">
+                            <i class="fas fa-book"></i><br>Reading Log
+                        </button>
+                    </div>
+                    <div class="col-6 mb-3">
+                        <button class="btn btn-outline-success w-100" onclick="openRewardShop()">
+                            <i class="fas fa-store"></i><br>Reward Shop
+                        </button>
+                    </div>
+                    <div class="col-6 mb-3">
+                        <button class="btn btn-outline-warning w-100" onclick="openJournal()">
+                            <i class="fas fa-journal-whills"></i><br>Journal
+                        </button>
+                    </div>
+                    <div class="col-6 mb-3">
+                        <button class="btn btn-outline-info w-100" onclick="openProgress()">
+                            <i class="fas fa-chart-bar"></i><br>Progress
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Break timer functionality
+    let breakTimer;
+    let breakTimeLeft;
+    
+    function startBreak(minutes) {
+        breakTimeLeft = minutes * 60;
+        document.getElementById('break-timer').style.display = 'block';
+        updateTimerDisplay();
+        
+        breakTimer = setInterval(() => {
+            breakTimeLeft--;
+            updateTimerDisplay();
+            
+            if (breakTimeLeft <= 0) {
+                stopBreak();
+                showBreakComplete();
+            }
+        }, 1000);
+    }
+    
+    function stopBreak() {
+        clearInterval(breakTimer);
+        document.getElementById('break-timer').style.display = 'none';
+    }
+    
+    function updateTimerDisplay() {
+        const minutes = Math.floor(breakTimeLeft / 60);
+        const seconds = breakTimeLeft % 60;
+        document.getElementById('timer-display').textContent = 
+            `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+    }
+    
+    function showBreakComplete() {
+        showAchievement('Break Complete!', 'Time to get back to learning!');
+    }
+    
+    // Quick actions
+    function showQuickActions() {
+        const modal = new bootstrap.Modal(document.getElementById('quickActionsModal'));
+        modal.show();
+    }
+    
+    function openReadingLog() {
+        // TODO: Implement reading log
+        alert('Reading Log coming soon!');
+    }
+    
+    function openRewardShop() {
+        // TODO: Implement reward shop
+        alert('Reward Shop coming soon!');
+    }
+    
+    function openJournal() {
+        // TODO: Implement journal
+        alert('Journal coming soon!');
+    }
+    
+    function openProgress() {
+        // TODO: Implement progress view
+        alert('Progress view coming soon!');
+    }
+    
+    // Auto-refresh dashboard every 5 minutes
+    setInterval(() => {
+        location.reload();
+    }, 300000);
+    
+    // Show welcome animation
+    document.addEventListener('DOMContentLoaded', function() {
+        setTimeout(() => {
+            showAchievement('Welcome Back!', 'Ready to learn something amazing?');
+        }, 1000);
+    });
+</script>
+{% endblock %} 

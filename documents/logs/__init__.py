@@ -1,0 +1,1 @@
+# documents/logs - __init__.py

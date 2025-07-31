@@ -1,0 +1,556 @@
+{% extends "base.html" %}
+{% block title %}{{ lesson.title }} - Savage Homeschool OS{% endblock %}
+
+{% block extra_css %}
+<style>
+.lesson-content {
+    background: white;
+    border-radius: 10px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.lesson-header {
+    border-bottom: 2px solid var(--primary-color);
+    padding-bottom: 1rem;
+    margin-bottom: 2rem;
+}
+
+.progress-indicator {
+    position: sticky;
+    top: 20px;
+    z-index: 100;
+}
+
+.quiz-section {
+    background: #f8f9fa;
+    border-radius: 10px;
+    padding: 1.5rem;
+    margin-top: 2rem;
+}
+
+.question-card {
+    background: white;
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.answer-option {
+    display: block;
+    padding: 0.75rem 1rem;
+    margin: 0.5rem 0;
+    border: 2px solid #e9ecef;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.answer-option:hover {
+    border-color: var(--primary-color);
+    background-color: #f8f9fa;
+}
+
+.answer-option.selected {
+    border-color: var(--primary-color);
+    background-color: var(--primary-color);
+    color: white;
+}
+
+.answer-option.correct {
+    border-color: #28a745;
+    background-color: #d4edda;
+    color: #155724;
+}
+
+.answer-option.incorrect {
+    border-color: #dc3545;
+    background-color: #f8d7da;
+    color: #721c24;
+}
+
+.lesson-actions {
+    position: sticky;
+    bottom: 20px;
+    background: white;
+    border-radius: 10px;
+    padding: 1rem;
+    box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+    z-index: 100;
+}
+
+.break-timer {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border-radius: 10px;
+    padding: 1rem;
+    text-align: center;
+    margin-bottom: 1rem;
+}
+
+.timer-display {
+    font-size: 2rem;
+    font-weight: bold;
+    margin: 0.5rem 0;
+}
+
+.embedded-content {
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    overflow: hidden;
+    margin: 1rem 0;
+}
+
+.embedded-content iframe {
+    width: 100%;
+    height: 400px;
+    border: none;
+}
+
+.lesson-navigation {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 2rem;
+    padding-top: 1rem;
+    border-top: 1px solid #dee2e6;
+}
+
+.lesson-stats {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+}
+
+.stat-item {
+    text-align: center;
+    padding: 0.5rem 1rem;
+    background: #f8f9fa;
+    border-radius: 8px;
+}
+
+.stat-value {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: var(--primary-color);
+}
+
+.stat-label {
+    font-size: 0.8rem;
+    color: #6c757d;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <!-- Main Lesson Content -->
+        <div class="col-lg-8">
+            <div class="lesson-content">
+                <div class="lesson-header">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div>
+                            <h1 class="mb-2">{{ lesson.title }}</h1>
+                            <div class="lesson-meta">
+                                <span class="badge bg-primary me-2">{{ lesson.subject }}</span>
+                                <span class="badge bg-secondary me-2">Grade {{ lesson.grade_level }}</span>
+                                <span class="badge bg-info me-2">Level {{ lesson.level }}</span>
+                                <span class="badge bg-success">{{ lesson.lesson_type }}</span>
+                            </div>
+                        </div>
+                        <div class="text-end">
+                            <div class="xp-badge">
+                                <i class="fas fa-star text-warning"></i>
+                                <span class="xp-value">{{ lesson.xp_value }} XP</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Progress Indicator -->
+                <div class="progress-indicator">
+                    <div class="progress mb-2" style="height: 10px;">
+                        <div class="progress-bar" role="progressbar" 
+                             style="width: {{ progress.percentage|default(0) }}%" 
+                             aria-valuenow="0" 
+                             aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                    <small class="text-muted">{{ progress.percentage|default(0) }}% Complete</small>
+                </div>
+
+                <!-- Lesson Content -->
+                <div class="lesson-body">
+                    {% if lesson.content %}
+                        <div class="content-section">
+                            <h3><i class="fas fa-book me-2"></i>Lesson Content</h3>
+                            <div class="content-text">
+                                {{ lesson.content|safe }}
+                            </div>
+                        </div>
+                    {% endif %}
+
+                    {% if lesson.teaching_summary %}
+                        <div class="content-section">
+                            <h3><i class="fas fa-chalkboard-teacher me-2"></i>Teaching Summary</h3>
+                            <div class="summary-text">
+                                {{ lesson.teaching_summary|safe }}
+                            </div>
+                        </div>
+                    {% endif %}
+
+                    {% if lesson.practice_section %}
+                        <div class="content-section">
+                            <h3><i class="fas fa-dumbbell me-2"></i>Practice Section</h3>
+                            <div class="practice-text">
+                                {{ lesson.practice_section|safe }}
+                            </div>
+                        </div>
+                    {% endif %}
+
+                    <!-- Embedded Content -->
+                    {% if lesson.embedded_content %}
+                        <div class="embedded-content">
+                            <h3><i class="fas fa-play me-2"></i>Interactive Content</h3>
+                            {{ lesson.embedded_content|safe }}
+                        </div>
+                    {% endif %}
+
+                    <!-- Break Timer -->
+                    {% if progress.status == 'in_progress' %}
+                        <div class="break-timer">
+                            <h4><i class="fas fa-clock me-2"></i>Break Timer</h4>
+                            <div class="timer-display" id="timerDisplay">15:00</div>
+                            <div class="timer-controls">
+                                <button class="btn btn-light btn-sm" onclick="startBreak()">
+                                    <i class="fas fa-play me-1"></i>Start Break
+                                </button>
+                                <button class="btn btn-light btn-sm" onclick="pauseBreak()">
+                                    <i class="fas fa-pause me-1"></i>Pause
+                                </button>
+                                <button class="btn btn-light btn-sm" onclick="resetBreak()">
+                                    <i class="fas fa-redo me-1"></i>Reset
+                                </button>
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>
+
+                <!-- Quiz Section -->
+                {% if lesson.quiz %}
+                    <div class="quiz-section">
+                        <h3><i class="fas fa-question-circle me-2"></i>Quiz</h3>
+                        <p class="text-muted">Test your understanding of this lesson.</p>
+                        
+                        <form id="quizForm">
+                            {% for question in lesson.quiz.questions %}
+                            <div class="question-card">
+                                <h5>Question {{ loop.index }}</h5>
+                                <p>{{ question.text }}</p>
+                                
+                                {% for option in question.options %}
+                                <label class="answer-option">
+                                    <input type="radio" name="q{{ loop.parent.index }}" 
+                                           value="{{ loop.index0 }}" class="d-none">
+                                    <span class="option-text">{{ option }}</span>
+                                </label>
+                                {% endfor %}
+                            </div>
+                            {% endfor %}
+                        </form>
+                    </div>
+                {% endif %}
+
+                <!-- Lesson Navigation -->
+                <div class="lesson-navigation">
+                    <div class="lesson-stats">
+                        <div class="stat-item">
+                            <div class="stat-value">{{ lesson.estimated_time|default(30) }}</div>
+                            <div class="stat-label">Minutes</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value">{{ lesson.difficulty|default('Medium') }}</div>
+                            <div class="stat-label">Difficulty</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value">{{ progress.attempts|default(0) }}</div>
+                            <div class="stat-label">Attempts</div>
+                        </div>
+                    </div>
+                    
+                    <div class="navigation-buttons">
+                        <button class="btn btn-outline-secondary" onclick="saveProgress()">
+                            <i class="fas fa-save me-1"></i>Save Progress
+                        </button>
+                        <button class="btn btn-primary" onclick="completeLesson()">
+                            <i class="fas fa-check me-1"></i>Complete Lesson
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sidebar -->
+        <div class="col-lg-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5><i class="fas fa-info-circle me-2"></i>Lesson Info</h5>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <strong>Subject:</strong> {{ lesson.subject }}<br>
+                        <strong>Grade Level:</strong> {{ lesson.grade_level }}<br>
+                        <strong>Difficulty Level:</strong> {{ lesson.level }}<br>
+                        <strong>Type:</strong> {{ lesson.lesson_type }}<br>
+                        <strong>Created:</strong> {{ lesson.created_at.strftime('%B %d, %Y') }}
+                    </div>
+                    
+                    <div class="mb-3">
+                        <strong>Your Progress:</strong><br>
+                        <div class="progress mb-2" style="height: 8px;">
+                            <div class="progress-bar" role="progressbar" 
+                                 style="width: {{ progress.percentage|default(0) }}%"></div>
+                        </div>
+                        <small class="text-muted">{{ progress.percentage|default(0) }}% Complete</small>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <strong>Status:</strong> 
+                        <span class="badge bg-{{ 'success' if progress.status == 'completed' else 'warning' if progress.status == 'in_progress' else 'secondary' }}">
+                            {{ progress.status|title }}
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card mt-3">
+                <div class="card-header">
+                    <h5><i class="fas fa-trophy me-2"></i>Rewards</h5>
+                </div>
+                <div class="card-body">
+                    <div class="reward-item">
+                        <i class="fas fa-star text-warning"></i>
+                        <span>{{ lesson.xp_value }} XP for completion</span>
+                    </div>
+                    {% if lesson.badge %}
+                    <div class="reward-item">
+                        <i class="fas fa-medal text-primary"></i>
+                        <span>{{ lesson.badge }} Badge</span>
+                    </div>
+                    {% endif %}
+                    {% if lesson.streak_bonus %}
+                    <div class="reward-item">
+                        <i class="fas fa-fire text-danger"></i>
+                        <span>{{ lesson.streak_bonus }} XP streak bonus</span>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="card mt-3">
+                <div class="card-header">
+                    <h5><i class="fas fa-lightbulb me-2"></i>Tips</h5>
+                </div>
+                <div class="card-body">
+                    <ul class="list-unstyled">
+                        <li><i class="fas fa-check text-success me-2"></i>Take your time to understand the concepts</li>
+                        <li><i class="fas fa-check text-success me-2"></i>Use the break timer if you need a rest</li>
+                        <li><i class="fas fa-check text-success me-2"></i>Review the practice section before the quiz</li>
+                        <li><i class="fas fa-check text-success me-2"></i>Don't rush - quality learning takes time</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Lesson Actions (Sticky Bottom) -->
+<div class="lesson-actions">
+    <div class="container-fluid">
+        <div class="row align-items-center">
+            <div class="col-md-6">
+                <div class="d-flex gap-2">
+                    <button class="btn btn-outline-primary" onclick="markInProgress()">
+                        <i class="fas fa-play me-1"></i>Start Learning
+                    </button>
+                    <button class="btn btn-outline-secondary" onclick="saveProgress()">
+                        <i class="fas fa-save me-1"></i>Save Progress
+                    </button>
+                </div>
+            </div>
+            <div class="col-md-6 text-end">
+                <div class="d-flex gap-2 justify-content-end">
+                    <button class="btn btn-outline-info" onclick="requestHelp()">
+                        <i class="fas fa-question-circle me-1"></i>Need Help?
+                    </button>
+                    <button class="btn btn-success" onclick="completeLesson()">
+                        <i class="fas fa-check me-1"></i>Complete Lesson
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+let breakTimer = null;
+let breakTimeLeft = 15 * 60; // 15 minutes in seconds
+
+function startBreak() {
+    if (breakTimer) return;
+    
+    breakTimer = setInterval(() => {
+        breakTimeLeft--;
+        updateTimerDisplay();
+        
+        if (breakTimeLeft <= 0) {
+            clearInterval(breakTimer);
+            breakTimer = null;
+            alert('Break time is up! Ready to continue learning?');
+        }
+    }, 1000);
+}
+
+function pauseBreak() {
+    if (breakTimer) {
+        clearInterval(breakTimer);
+        breakTimer = null;
+    }
+}
+
+function resetBreak() {
+    if (breakTimer) {
+        clearInterval(breakTimer);
+        breakTimer = null;
+    }
+    breakTimeLeft = 15 * 60;
+    updateTimerDisplay();
+}
+
+function updateTimerDisplay() {
+    const minutes = Math.floor(breakTimeLeft / 60);
+    const seconds = breakTimeLeft % 60;
+    document.getElementById('timerDisplay').textContent = 
+        `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+}
+
+function markInProgress() {
+    fetch(`/lesson/{{ lesson.id }}/start`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            location.reload();
+        }
+    });
+}
+
+function saveProgress() {
+    fetch(`/lesson/{{ lesson.id }}/save-progress`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            progress: 50 // This would be calculated based on actual progress
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            showNotification('Progress saved!', 'success');
+        }
+    });
+}
+
+function completeLesson() {
+    const quizAnswers = {};
+    const quizForm = document.getElementById('quizForm');
+    if (quizForm) {
+        const formData = new FormData(quizForm);
+        for (let [key, value] of formData.entries()) {
+            quizAnswers[key] = value;
+        }
+    }
+    
+    fetch(`/lesson/{{ lesson.id }}/complete`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            quiz_answers: quizAnswers,
+            completed: true
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            showNotification('Lesson completed! +' + data.xp_earned + ' XP', 'success');
+            setTimeout(() => {
+                window.location.href = '/child/dashboard';
+            }, 2000);
+        } else {
+            showNotification('Error completing lesson: ' + data.message, 'error');
+        }
+    });
+}
+
+function requestHelp() {
+    // This could open a help modal or redirect to parent
+    alert('Help requested! A parent will be notified.');
+}
+
+// Quiz functionality
+document.addEventListener('DOMContentLoaded', function() {
+    const answerOptions = document.querySelectorAll('.answer-option');
+    
+    answerOptions.forEach(option => {
+        option.addEventListener('click', function() {
+            // Remove selected class from siblings
+            const siblings = this.parentElement.querySelectorAll('.answer-option');
+            siblings.forEach(sib => sib.classList.remove('selected'));
+            
+            // Add selected class to clicked option
+            this.classList.add('selected');
+            
+            // Check the radio button
+            const radio = this.querySelector('input[type="radio"]');
+            if (radio) radio.checked = true;
+        });
+    });
+});
+
+function showNotification(message, type) {
+    // Create notification element
+    const notification = document.createElement('div');
+    notification.className = `alert alert-${type === 'success' ? 'success' : 'danger'} alert-dismissible fade show`;
+    notification.style.position = 'fixed';
+    notification.style.top = '20px';
+    notification.style.right = '20px';
+    notification.style.zIndex = '9999';
+    notification.innerHTML = `
+        ${message}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    `;
+    
+    document.body.appendChild(notification);
+    
+    // Auto-remove after 5 seconds
+    setTimeout(() => {
+        if (notification.parentNode) {
+            notification.parentNode.removeChild(notification);
+        }
+    }, 5000);
+}
+</script>
+{% endblock %} 

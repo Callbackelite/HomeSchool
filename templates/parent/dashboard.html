@@ -1,0 +1,273 @@
+{% extends "base.html" %}
+{% block title %}Parent Dashboard - Savage Homeschool OS{% endblock %}
+
+{% block content %}
+<div class="welcome-message">
+    <h1>Parent Dashboard</h1>
+    <p class="lead">Monitor and manage your children's learning progress</p>
+</div>
+
+<div class="row mb-4">
+    <div class="col-md-3">
+        <div class="card stat-card">
+            <div class="card-body text-center">
+                <i class="fas fa-users fa-2x text-primary mb-2"></i>
+                <h3>{{ children|length }}</h3>
+                <p class="text-muted">Children</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card stat-card">
+            <div class="card-body text-center">
+                <i class="fas fa-book fa-2x text-success mb-2"></i>
+                <h3>{{ total_lessons|default(0) }}</h3>
+                <p class="text-muted">Total Lessons</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card stat-card">
+            <div class="card-body text-center">
+                <i class="fas fa-trophy fa-2x text-warning mb-2"></i>
+                <h3>{{ total_xp|default(0) }}</h3>
+                <p class="text-muted">Total XP Earned</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card stat-card">
+            <div class="card-body text-center">
+                <i class="fas fa-calendar-check fa-2x text-info mb-2"></i>
+                <h3>{{ active_streaks|default(0) }}</h3>
+                <p class="text-muted">Active Streaks</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h5><i class="fas fa-child me-2"></i>Your Children</h5>
+            </div>
+            <div class="card-body">
+                {% if children %}
+                    <div class="row">
+                        {% for child in children %}
+                        <div class="col-md-6 mb-3">
+                            <div class="child-card">
+                                <div class="d-flex align-items-center">
+                                    <div class="avatar-container me-3">
+                                        <img src="{{ child.avatar_url|default('/static/avatars/default.png') }}" 
+                                             alt="{{ child.username }}" class="avatar">
+                                    </div>
+                                    <div class="flex-grow-1">
+                                        <h6 class="mb-1">{{ child.username }}</h6>
+                                        <p class="text-muted mb-1">Grade {{ child.grade_level }}</p>
+                                        <div class="progress mb-2" style="height: 8px;">
+                                            <div class="progress-bar" role="progressbar" 
+                                                 style="width: {{ child.progress_percentage|default(0) }}%"></div>
+                                        </div>
+                                        <small class="text-muted">{{ child.progress_percentage|default(0) }}% Complete</small>
+                                    </div>
+                                    <div class="text-end">
+                                        <span class="badge bg-primary">{{ child.total_xp|default(0) }} XP</span>
+                                        <br>
+                                        <small class="text-muted">{{ child.lessons_completed|default(0) }} lessons</small>
+                                    </div>
+                                </div>
+                                <div class="mt-3">
+                                    <button class="btn btn-sm btn-outline-primary" onclick="viewChildProgress({{ child.id }})">
+                                        <i class="fas fa-chart-line me-1"></i>Progress
+                                    </button>
+                                    <button class="btn btn-sm btn-outline-success" onclick="assignLesson({{ child.id }})">
+                                        <i class="fas fa-plus me-1"></i>Assign
+                                    </button>
+                                    <button class="btn btn-sm btn-outline-info" onclick="viewChildDetails({{ child.id }})">
+                                        <i class="fas fa-eye me-1"></i>Details
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="text-center py-4">
+                        <i class="fas fa-child fa-3x text-muted mb-3"></i>
+                        <h5>No Children Added</h5>
+                        <p class="text-muted">Add your children to start monitoring their progress.</p>
+                        <button class="btn btn-primary" onclick="addChild()">
+                            <i class="fas fa-plus me-1"></i>Add Child
+                        </button>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header">
+                <h5><i class="fas fa-tasks me-2"></i>Quick Actions</h5>
+            </div>
+            <div class="card-body">
+                <div class="d-grid gap-2">
+                    <button class="btn btn-outline-primary" onclick="uploadContent()">
+                        <i class="fas fa-upload me-2"></i>Upload Content
+                    </button>
+                    <button class="btn btn-outline-success" onclick="createCustomLesson()">
+                        <i class="fas fa-edit me-2"></i>Create Custom Lesson
+                    </button>
+                    <button class="btn btn-outline-info" onclick="viewReports()">
+                        <i class="fas fa-chart-bar me-2"></i>View Reports
+                    </button>
+                    <button class="btn btn-outline-warning" onclick="manageRewards()">
+                        <i class="fas fa-gift me-2"></i>Manage Rewards
+                    </button>
+                    <button class="btn btn-outline-secondary" onclick="backupData()">
+                        <i class="fas fa-download me-2"></i>Backup Data
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card mt-3">
+            <div class="card-header">
+                <h5><i class="fas fa-bell me-2"></i>Recent Activity</h5>
+            </div>
+            <div class="card-body">
+                {% if recent_activities %}
+                    <div class="activity-list">
+                        {% for activity in recent_activities[:5] %}
+                        <div class="activity-item">
+                            <div class="activity-icon">
+                                <i class="fas fa-{{ activity.icon }}"></i>
+                            </div>
+                            <div class="activity-content">
+                                <div class="activity-text">{{ activity.description }}</div>
+                                <div class="activity-time">{{ activity.timestamp|timeago }}</div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <p class="text-muted text-center">No recent activity</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Add Child Modal -->
+<div class="modal fade" id="addChildModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Add Child</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="addChildForm">
+                    <div class="mb-3">
+                        <label for="childUsername" class="form-label">Username</label>
+                        <input type="text" class="form-control" id="childUsername" name="username" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="childGrade" class="form-label">Grade Level</label>
+                        <select class="form-select" id="childGrade" name="grade_level" required>
+                            <option value="">Select Grade</option>
+                            <option value="K">Kindergarten</option>
+                            <option value="1">1st Grade</option>
+                            <option value="2">2nd Grade</option>
+                            <option value="3">3rd Grade</option>
+                            <option value="4">4th Grade</option>
+                            <option value="5">5th Grade</option>
+                            <option value="6">6th Grade</option>
+                            <option value="7">7th Grade</option>
+                            <option value="8">8th Grade</option>
+                            <option value="9">9th Grade</option>
+                            <option value="10">10th Grade</option>
+                            <option value="11">11th Grade</option>
+                            <option value="12">12th Grade</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="childPin" class="form-label">PIN (6 digits)</label>
+                        <input type="password" class="form-control" id="childPin" name="pin" 
+                               maxlength="6" pattern="[0-9]*" required>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" onclick="saveChild()">Add Child</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function addChild() {
+    $('#addChildModal').modal('show');
+}
+
+function saveChild() {
+    const formData = new FormData(document.getElementById('addChildForm'));
+    
+    fetch('/api/add-child', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            location.reload();
+        } else {
+            alert('Error adding child: ' + data.message);
+        }
+    });
+}
+
+function viewChildProgress(childId) {
+    window.location.href = `/parent/child/${childId}/progress`;
+}
+
+function assignLesson(childId) {
+    window.location.href = `/parent/child/${childId}/assign`;
+}
+
+function viewChildDetails(childId) {
+    window.location.href = `/parent/child/${childId}/details`;
+}
+
+function uploadContent() {
+    window.location.href = '/upload';
+}
+
+function createCustomLesson() {
+    window.location.href = '/parent/create-lesson';
+}
+
+function viewReports() {
+    window.location.href = '/parent/reports';
+}
+
+function manageRewards() {
+    window.location.href = '/parent/rewards';
+}
+
+function backupData() {
+    window.location.href = '/parent/backup';
+}
+
+// Format timestamps
+document.addEventListener('DOMContentLoaded', function() {
+    // Add any additional initialization here
+});
+</script>
+{% endblock %} 
