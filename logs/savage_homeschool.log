@@ -31,3 +31,200 @@
 2025-07-31 15:49:31,869 - werkzeug - INFO - 127.0.0.1 - - [31/Jul/2025 15:49:31] "GET /admin/dashboard HTTP/1.1" 200 -
 2025-07-31 15:49:32,739 - werkzeug - INFO - 127.0.0.1 - - [31/Jul/2025 15:49:32] "[32mGET / HTTP/1.1[0m" 302 -
 2025-07-31 15:49:33,048 - werkzeug - INFO - 127.0.0.1 - - [31/Jul/2025 15:49:33] "GET /admin/dashboard HTTP/1.1" 200 -
+2025-07-31 15:55:51,843 - apscheduler.scheduler - INFO - Added job "scheduled_backup" to job store "default"
+2025-07-31 15:55:51,894 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://10.1.23.19:5000
+2025-07-31 15:55:51,894 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-07-31 15:55:51,896 - werkzeug - INFO -  * Restarting with stat
+2025-07-31 15:55:53,023 - apscheduler.scheduler - INFO - Added job "scheduled_backup" to job store "default"
+2025-07-31 15:55:53,063 - werkzeug - WARNING -  * Debugger is active!
+2025-07-31 15:55:53,066 - werkzeug - INFO -  * Debugger PIN: 145-052-169
+2025-07-31 15:55:54,322 - werkzeug - INFO - 127.0.0.1 - - [31/Jul/2025 15:55:54] "[32mGET / HTTP/1.1[0m" 302 -
+2025-07-31 15:55:54,349 - werkzeug - INFO - 127.0.0.1 - - [31/Jul/2025 15:55:54] "GET /admin/dashboard HTTP/1.1" 200 -
+2025-07-31 15:55:55,167 - werkzeug - INFO - 127.0.0.1 - - [31/Jul/2025 15:55:55] "[32mGET / HTTP/1.1[0m" 302 -
+2025-07-31 15:55:55,472 - werkzeug - INFO - 127.0.0.1 - - [31/Jul/2025 15:55:55] "GET /admin/dashboard HTTP/1.1" 200 -
+2025-07-31 15:56:13,436 - werkzeug - INFO - 127.0.0.1 - - [31/Jul/2025 15:56:13] "[33mPOST /api/users HTTP/1.1[0m" 404 -
+2025-07-31 15:56:16,279 - werkzeug - INFO - 127.0.0.1 - - [31/Jul/2025 15:56:16] "[33mPOST /api/users HTTP/1.1[0m" 404 -
+2025-07-31 15:56:59,786 - werkzeug - INFO -  * Detected change in 'C:\\Users\\brandon.prescher\\Desktop\\SavageHomeschoolOS\\app.py', reloading
+2025-07-31 15:56:59,963 - werkzeug - INFO -  * Restarting with stat
+2025-07-31 15:57:01,291 - apscheduler.scheduler - INFO - Added job "scheduled_backup" to job store "default"
+2025-07-31 15:57:01,331 - werkzeug - WARNING -  * Debugger is active!
+2025-07-31 15:57:01,334 - werkzeug - INFO -  * Debugger PIN: 145-052-169
+2025-07-31 15:57:03,766 - werkzeug - INFO - 127.0.0.1 - - [31/Jul/2025 15:57:03] "[32mGET / HTTP/1.1[0m" 302 -
+2025-07-31 15:57:03,795 - werkzeug - INFO - 127.0.0.1 - - [31/Jul/2025 15:57:03] "GET /admin/dashboard HTTP/1.1" 200 -
+2025-07-31 15:57:08,435 - werkzeug - INFO -  * Detected change in 'C:\\Users\\brandon.prescher\\Desktop\\SavageHomeschoolOS\\app.py', reloading
+2025-07-31 15:57:08,618 - werkzeug - INFO -  * Restarting with stat
+2025-07-31 15:57:09,967 - apscheduler.scheduler - INFO - Added job "scheduled_backup" to job store "default"
+2025-07-31 15:57:10,010 - werkzeug - WARNING -  * Debugger is active!
+2025-07-31 15:57:10,014 - werkzeug - INFO -  * Debugger PIN: 145-052-169
+2025-07-31 15:57:12,418 - werkzeug - INFO - 127.0.0.1 - - [31/Jul/2025 15:57:12] "[32mGET / HTTP/1.1[0m" 302 -
+2025-07-31 15:57:12,445 - werkzeug - INFO - 127.0.0.1 - - [31/Jul/2025 15:57:12] "GET /admin/dashboard HTTP/1.1" 200 -
+2025-07-31 15:57:15,091 - werkzeug - INFO -  * Detected change in 'C:\\Users\\brandon.prescher\\Desktop\\SavageHomeschoolOS\\app.py', reloading
+2025-07-31 15:57:15,267 - werkzeug - INFO -  * Restarting with stat
+2025-07-31 15:57:16,548 - apscheduler.scheduler - INFO - Added job "scheduled_backup" to job store "default"
+2025-07-31 15:57:16,589 - werkzeug - WARNING -  * Debugger is active!
+2025-07-31 15:57:16,592 - werkzeug - INFO -  * Debugger PIN: 145-052-169
+2025-07-31 15:57:18,991 - werkzeug - INFO - 127.0.0.1 - - [31/Jul/2025 15:57:18] "[32mGET / HTTP/1.1[0m" 302 -
+2025-07-31 15:57:19,019 - werkzeug - INFO - 127.0.0.1 - - [31/Jul/2025 15:57:19] "GET /admin/dashboard HTTP/1.1" 200 -
+2025-07-31 15:57:21,668 - werkzeug - INFO -  * Detected change in 'C:\\Users\\brandon.prescher\\Desktop\\SavageHomeschoolOS\\app.py', reloading
+2025-07-31 15:57:21,825 - werkzeug - INFO -  * Restarting with stat
+2025-07-31 15:57:23,167 - apscheduler.scheduler - INFO - Added job "scheduled_backup" to job store "default"
+2025-07-31 15:57:23,207 - werkzeug - WARNING -  * Debugger is active!
+2025-07-31 15:57:23,210 - werkzeug - INFO -  * Debugger PIN: 145-052-169
+2025-07-31 15:57:25,612 - werkzeug - INFO - 127.0.0.1 - - [31/Jul/2025 15:57:25] "[32mGET / HTTP/1.1[0m" 302 -
+2025-07-31 15:57:25,638 - werkzeug - INFO - 127.0.0.1 - - [31/Jul/2025 15:57:25] "GET /admin/dashboard HTTP/1.1" 200 -
+2025-07-31 15:57:34,351 - werkzeug - INFO -  * Detected change in 'C:\\Users\\brandon.prescher\\Desktop\\SavageHomeschoolOS\\app.py', reloading
+2025-07-31 15:57:34,580 - werkzeug - INFO -  * Restarting with stat
+2025-07-31 15:57:35,782 - apscheduler.scheduler - INFO - Added job "scheduled_backup" to job store "default"
+2025-07-31 15:57:35,821 - werkzeug - WARNING -  * Debugger is active!
+2025-07-31 15:57:35,823 - werkzeug - INFO -  * Debugger PIN: 145-052-169
+2025-07-31 15:57:38,222 - werkzeug - INFO - 127.0.0.1 - - [31/Jul/2025 15:57:38] "[32mGET / HTTP/1.1[0m" 302 -
+2025-07-31 15:57:38,248 - werkzeug - INFO - 127.0.0.1 - - [31/Jul/2025 15:57:38] "GET /admin/dashboard HTTP/1.1" 200 -
+2025-07-31 15:57:43,244 - apscheduler.scheduler - INFO - Added job "scheduled_backup" to job store "default"
+2025-07-31 15:57:43,299 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://10.1.23.19:5000
+2025-07-31 15:57:43,299 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-07-31 15:57:43,301 - werkzeug - INFO -  * Restarting with stat
+2025-07-31 15:57:44,505 - apscheduler.scheduler - INFO - Added job "scheduled_backup" to job store "default"
+2025-07-31 15:57:44,546 - werkzeug - WARNING -  * Debugger is active!
+2025-07-31 15:57:44,550 - werkzeug - INFO -  * Debugger PIN: 145-052-169
+2025-07-31 15:57:44,945 - werkzeug - INFO -  * Detected change in 'C:\\Users\\brandon.prescher\\Desktop\\SavageHomeschoolOS\\app.py', reloading
+2025-07-31 15:57:45,157 - werkzeug - INFO -  * Restarting with stat
+2025-07-31 15:57:45,585 - werkzeug - INFO -  * Detected change in 'C:\\Users\\brandon.prescher\\Desktop\\SavageHomeschoolOS\\app.py', reloading
+2025-07-31 15:57:45,746 - werkzeug - INFO -  * Restarting with stat
+2025-07-31 15:57:46,362 - apscheduler.scheduler - INFO - Added job "scheduled_backup" to job store "default"
+2025-07-31 15:57:46,402 - werkzeug - WARNING -  * Debugger is active!
+2025-07-31 15:57:46,404 - werkzeug - INFO -  * Debugger PIN: 145-052-169
+2025-07-31 15:57:46,425 - werkzeug - INFO - 127.0.0.1 - - [31/Jul/2025 15:57:46] "[32mGET / HTTP/1.1[0m" 302 -
+2025-07-31 15:57:46,452 - werkzeug - INFO - 127.0.0.1 - - [31/Jul/2025 15:57:46] "GET /admin/dashboard HTTP/1.1" 200 -
+2025-07-31 15:57:46,916 - apscheduler.scheduler - INFO - Added job "scheduled_backup" to job store "default"
+2025-07-31 15:57:46,964 - werkzeug - WARNING -  * Debugger is active!
+2025-07-31 15:57:46,967 - werkzeug - INFO -  * Debugger PIN: 145-052-169
+2025-07-31 15:57:48,505 - werkzeug - INFO - 127.0.0.1 - - [31/Jul/2025 15:57:48] "[32mGET / HTTP/1.1[0m" 302 -
+2025-07-31 15:57:48,814 - werkzeug - INFO - 127.0.0.1 - - [31/Jul/2025 15:57:48] "GET /admin/dashboard HTTP/1.1" 200 -
+2025-07-31 15:57:49,078 - werkzeug - INFO - 127.0.0.1 - - [31/Jul/2025 15:57:49] "[32mGET / HTTP/1.1[0m" 302 -
+2025-07-31 15:57:49,387 - werkzeug - INFO - 127.0.0.1 - - [31/Jul/2025 15:57:49] "GET /admin/dashboard HTTP/1.1" 200 -
+2025-07-31 15:58:06,362 - werkzeug - INFO - 127.0.0.1 - - [31/Jul/2025 15:58:06] "POST /api/admin/users HTTP/1.1" 200 -
+2025-07-31 15:58:06,388 - werkzeug - INFO - 127.0.0.1 - - [31/Jul/2025 15:58:06] "GET /admin/dashboard HTTP/1.1" 200 -
+2025-07-31 15:58:06,675 - werkzeug - INFO - 127.0.0.1 - - [31/Jul/2025 15:58:06] "[33mGET /static/avatars/default.png HTTP/1.1[0m" 404 -
+2025-07-31 15:58:13,093 - werkzeug - INFO - 127.0.0.1 - - [31/Jul/2025 15:58:13] "[32mGET /logout HTTP/1.1[0m" 302 -
+2025-07-31 15:58:13,388 - werkzeug - INFO - 127.0.0.1 - - [31/Jul/2025 15:58:13] "GET / HTTP/1.1" 200 -
+2025-07-31 15:58:15,622 - werkzeug - INFO - 127.0.0.1 - - [31/Jul/2025 15:58:15] "GET /login HTTP/1.1" 200 -
+2025-07-31 15:58:37,769 - werkzeug - INFO - 127.0.0.1 - - [31/Jul/2025 15:58:37] "[32mPOST /login HTTP/1.1[0m" 302 -
+2025-07-31 15:58:37,776 - werkzeug - INFO - 127.0.0.1 - - [31/Jul/2025 15:58:37] "GET /admin/dashboard HTTP/1.1" 200 -
+2025-07-31 15:58:37,798 - werkzeug - INFO - 127.0.0.1 - - [31/Jul/2025 15:58:37] "[33mGET /static/avatars/default.png HTTP/1.1[0m" 404 -
+2025-07-31 15:58:47,120 - werkzeug - INFO - 127.0.0.1 - - [31/Jul/2025 15:58:47] "DELETE /api/admin/users/2 HTTP/1.1" 200 -
+2025-07-31 15:58:47,357 - werkzeug - INFO - 127.0.0.1 - - [31/Jul/2025 15:58:47] "GET /admin/dashboard HTTP/1.1" 200 -
+2025-07-31 15:58:58,870 - werkzeug - INFO - 127.0.0.1 - - [31/Jul/2025 15:58:58] "POST /api/admin/users HTTP/1.1" 200 -
+2025-07-31 15:58:59,186 - werkzeug - INFO - 127.0.0.1 - - [31/Jul/2025 15:58:59] "GET /admin/dashboard HTTP/1.1" 200 -
+2025-07-31 15:58:59,204 - werkzeug - INFO - 127.0.0.1 - - [31/Jul/2025 15:58:59] "[33mGET /static/avatars/default.png HTTP/1.1[0m" 404 -
+2025-07-31 15:59:01,612 - werkzeug - INFO - 127.0.0.1 - - [31/Jul/2025 15:59:01] "[32mGET /logout HTTP/1.1[0m" 302 -
+2025-07-31 15:59:01,907 - werkzeug - INFO - 127.0.0.1 - - [31/Jul/2025 15:59:01] "GET / HTTP/1.1" 200 -
+2025-07-31 15:59:03,990 - werkzeug - INFO - 127.0.0.1 - - [31/Jul/2025 15:59:03] "GET /login HTTP/1.1" 200 -
+2025-07-31 15:59:15,535 - werkzeug - INFO - 127.0.0.1 - - [31/Jul/2025 15:59:15] "[32mPOST /login HTTP/1.1[0m" 302 -
+2025-07-31 15:59:15,616 - werkzeug - INFO - 127.0.0.1 - - [31/Jul/2025 15:59:15] "[35m[1mGET /child/dashboard HTTP/1.1[0m" 500 -
+2025-07-31 15:59:15,823 - werkzeug - INFO - 127.0.0.1 - - [31/Jul/2025 15:59:15] "GET /child/dashboard?__debugger__=yes&cmd=resource&f=style.css HTTP/1.1" 200 -
+2025-07-31 15:59:15,989 - werkzeug - INFO - 127.0.0.1 - - [31/Jul/2025 15:59:15] "GET /child/dashboard?__debugger__=yes&cmd=resource&f=debugger.js HTTP/1.1" 200 -
+2025-07-31 15:59:16,318 - werkzeug - INFO - 127.0.0.1 - - [31/Jul/2025 15:59:16] "GET /child/dashboard?__debugger__=yes&cmd=resource&f=console.png HTTP/1.1" 200 -
+2025-07-31 15:59:16,569 - werkzeug - INFO - 127.0.0.1 - - [31/Jul/2025 15:59:16] "[36mGET /child/dashboard?__debugger__=yes&cmd=resource&f=console.png HTTP/1.1[0m" 304 -
+2025-07-31 16:01:43,460 - werkzeug - INFO -  * Detected change in 'C:\\Users\\brandon.prescher\\Desktop\\SavageHomeschoolOS\\app.py', reloading
+2025-07-31 16:01:43,616 - werkzeug - INFO -  * Restarting with stat
+2025-07-31 16:01:43,933 - werkzeug - INFO -  * Detected change in 'C:\\Users\\brandon.prescher\\Desktop\\SavageHomeschoolOS\\app.py', reloading
+2025-07-31 16:01:44,172 - werkzeug - INFO -  * Restarting with stat
+2025-07-31 16:01:44,963 - apscheduler.scheduler - INFO - Added job "scheduled_backup" to job store "default"
+2025-07-31 16:01:45,006 - werkzeug - WARNING -  * Debugger is active!
+2025-07-31 16:01:45,009 - werkzeug - INFO -  * Debugger PIN: 145-052-169
+2025-07-31 16:01:45,381 - apscheduler.scheduler - INFO - Added job "scheduled_backup" to job store "default"
+2025-07-31 16:01:45,419 - werkzeug - WARNING -  * Debugger is active!
+2025-07-31 16:01:45,421 - werkzeug - INFO -  * Debugger PIN: 145-052-169
+2025-07-31 16:01:47,424 - werkzeug - INFO - 127.0.0.1 - - [31/Jul/2025 16:01:47] "[32mGET / HTTP/1.1[0m" 302 -
+2025-07-31 16:01:47,542 - werkzeug - INFO - 127.0.0.1 - - [31/Jul/2025 16:01:47] "[35m[1mGET /child/dashboard HTTP/1.1[0m" 500 -
+2025-07-31 16:01:47,673 - werkzeug - INFO - 127.0.0.1 - - [31/Jul/2025 16:01:47] "[32mGET / HTTP/1.1[0m" 302 -
+2025-07-31 16:01:47,899 - werkzeug - INFO - 127.0.0.1 - - [31/Jul/2025 16:01:47] "[35m[1mGET /child/dashboard HTTP/1.1[0m" 500 -
+2025-07-31 16:01:47,901 - werkzeug - INFO - 127.0.0.1 - - [31/Jul/2025 16:01:47] "[36mGET /child/dashboard?__debugger__=yes&cmd=resource&f=style.css HTTP/1.1[0m" 304 -
+2025-07-31 16:01:47,979 - werkzeug - INFO - 127.0.0.1 - - [31/Jul/2025 16:01:47] "[36mGET /child/dashboard?__debugger__=yes&cmd=resource&f=style.css HTTP/1.1[0m" 304 -
+2025-07-31 16:01:48,215 - werkzeug - INFO - 127.0.0.1 - - [31/Jul/2025 16:01:48] "[36mGET /child/dashboard?__debugger__=yes&cmd=resource&f=debugger.js HTTP/1.1[0m" 304 -
+2025-07-31 16:01:48,519 - werkzeug - INFO - 127.0.0.1 - - [31/Jul/2025 16:01:48] "[36mGET /child/dashboard?__debugger__=yes&cmd=resource&f=debugger.js HTTP/1.1[0m" 304 -
+2025-07-31 16:01:48,525 - werkzeug - INFO - 127.0.0.1 - - [31/Jul/2025 16:01:48] "[36mGET /child/dashboard?__debugger__=yes&cmd=resource&f=console.png HTTP/1.1[0m" 304 -
+2025-07-31 16:01:48,771 - werkzeug - INFO - 127.0.0.1 - - [31/Jul/2025 16:01:48] "[36mGET /child/dashboard?__debugger__=yes&cmd=resource&f=console.png HTTP/1.1[0m" 304 -
+2025-07-31 16:01:52,174 - apscheduler.scheduler - INFO - Added job "scheduled_backup" to job store "default"
+2025-07-31 16:01:52,224 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://10.1.23.19:5000
+2025-07-31 16:01:52,224 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-07-31 16:01:52,226 - werkzeug - INFO -  * Restarting with stat
+2025-07-31 16:01:53,391 - apscheduler.scheduler - INFO - Added job "scheduled_backup" to job store "default"
+2025-07-31 16:01:53,432 - werkzeug - WARNING -  * Debugger is active!
+2025-07-31 16:01:53,435 - werkzeug - INFO -  * Debugger PIN: 145-052-169
+2025-07-31 16:01:54,646 - werkzeug - INFO - 127.0.0.1 - - [31/Jul/2025 16:01:54] "[32mGET / HTTP/1.1[0m" 302 -
+2025-07-31 16:01:54,662 - werkzeug - INFO - 127.0.0.1 - - [31/Jul/2025 16:01:54] "[35m[1mGET /child/dashboard HTTP/1.1[0m" 500 -
+2025-07-31 16:01:54,896 - werkzeug - INFO - 127.0.0.1 - - [31/Jul/2025 16:01:54] "[36mGET /child/dashboard?__debugger__=yes&cmd=resource&f=style.css HTTP/1.1[0m" 304 -
+2025-07-31 16:01:54,979 - werkzeug - INFO - 127.0.0.1 - - [31/Jul/2025 16:01:54] "[36mGET /child/dashboard?__debugger__=yes&cmd=resource&f=debugger.js HTTP/1.1[0m" 304 -
+2025-07-31 16:01:55,317 - werkzeug - INFO - 127.0.0.1 - - [31/Jul/2025 16:01:55] "[36mGET /child/dashboard?__debugger__=yes&cmd=resource&f=console.png HTTP/1.1[0m" 304 -
+2025-07-31 16:01:55,569 - werkzeug - INFO - 127.0.0.1 - - [31/Jul/2025 16:01:55] "[32mGET / HTTP/1.1[0m" 302 -
+2025-07-31 16:01:55,847 - werkzeug - INFO - 127.0.0.1 - - [31/Jul/2025 16:01:55] "[35m[1mGET /child/dashboard HTTP/1.1[0m" 500 -
+2025-07-31 16:01:55,875 - werkzeug - INFO - 127.0.0.1 - - [31/Jul/2025 16:01:55] "[36mGET /child/dashboard?__debugger__=yes&cmd=resource&f=style.css HTTP/1.1[0m" 304 -
+2025-07-31 16:01:56,166 - werkzeug - INFO - 127.0.0.1 - - [31/Jul/2025 16:01:56] "[36mGET /child/dashboard?__debugger__=yes&cmd=resource&f=debugger.js HTTP/1.1[0m" 304 -
+2025-07-31 16:01:56,201 - werkzeug - INFO - 127.0.0.1 - - [31/Jul/2025 16:01:56] "[36mGET /child/dashboard?__debugger__=yes&cmd=resource&f=console.png HTTP/1.1[0m" 304 -
+2025-07-31 16:03:02,035 - apscheduler.scheduler - INFO - Added job "scheduled_backup" to job store "default"
+2025-07-31 16:03:02,412 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://10.1.23.19:5000
+2025-07-31 16:03:02,413 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-07-31 16:03:02,415 - werkzeug - INFO -  * Restarting with stat
+2025-07-31 16:03:03,605 - apscheduler.scheduler - INFO - Added job "scheduled_backup" to job store "default"
+2025-07-31 16:03:03,648 - werkzeug - WARNING -  * Debugger is active!
+2025-07-31 16:03:03,651 - werkzeug - INFO -  * Debugger PIN: 145-052-169
+2025-07-31 16:03:04,834 - werkzeug - INFO - 127.0.0.1 - - [31/Jul/2025 16:03:04] "GET / HTTP/1.1" 200 -
+2025-07-31 16:03:05,759 - werkzeug - INFO - 127.0.0.1 - - [31/Jul/2025 16:03:05] "GET / HTTP/1.1" 200 -
+2025-07-31 16:03:24,193 - werkzeug - INFO - 127.0.0.1 - - [31/Jul/2025 16:03:24] "GET /login HTTP/1.1" 200 -
+2025-07-31 16:03:30,624 - werkzeug - INFO - 127.0.0.1 - - [31/Jul/2025 16:03:30] "POST /login HTTP/1.1" 200 -
+2025-07-31 16:03:40,024 - werkzeug - INFO - 127.0.0.1 - - [31/Jul/2025 16:03:40] "POST /login HTTP/1.1" 200 -
+2025-07-31 16:03:47,002 - werkzeug - INFO - 127.0.0.1 - - [31/Jul/2025 16:03:47] "[32mPOST /login HTTP/1.1[0m" 302 -
+2025-07-31 16:03:47,026 - werkzeug - INFO - 127.0.0.1 - - [31/Jul/2025 16:03:47] "GET /admin/dashboard HTTP/1.1" 200 -
+2025-07-31 16:03:59,169 - werkzeug - INFO - 127.0.0.1 - - [31/Jul/2025 16:03:59] "POST /api/admin/users HTTP/1.1" 200 -
+2025-07-31 16:03:59,203 - werkzeug - INFO - 127.0.0.1 - - [31/Jul/2025 16:03:59] "GET /admin/dashboard HTTP/1.1" 200 -
+2025-07-31 16:03:59,481 - werkzeug - INFO - 127.0.0.1 - - [31/Jul/2025 16:03:59] "[33mGET /static/avatars/default.png HTTP/1.1[0m" 404 -
+2025-07-31 16:04:01,666 - werkzeug - INFO - 127.0.0.1 - - [31/Jul/2025 16:04:01] "[32mGET /logout HTTP/1.1[0m" 302 -
+2025-07-31 16:04:01,961 - werkzeug - INFO - 127.0.0.1 - - [31/Jul/2025 16:04:01] "GET / HTTP/1.1" 200 -
+2025-07-31 16:04:03,396 - werkzeug - INFO - 127.0.0.1 - - [31/Jul/2025 16:04:03] "GET /login HTTP/1.1" 200 -
+2025-07-31 16:04:11,253 - werkzeug - INFO - 127.0.0.1 - - [31/Jul/2025 16:04:11] "[32mPOST /login HTTP/1.1[0m" 302 -
+2025-07-31 16:04:11,280 - werkzeug - INFO - 127.0.0.1 - - [31/Jul/2025 16:04:11] "[35m[1mGET /child/dashboard HTTP/1.1[0m" 500 -
+2025-07-31 16:04:11,522 - werkzeug - INFO - 127.0.0.1 - - [31/Jul/2025 16:04:11] "[36mGET /child/dashboard?__debugger__=yes&cmd=resource&f=style.css HTTP/1.1[0m" 304 -
+2025-07-31 16:04:11,611 - werkzeug - INFO - 127.0.0.1 - - [31/Jul/2025 16:04:11] "[36mGET /child/dashboard?__debugger__=yes&cmd=resource&f=debugger.js HTTP/1.1[0m" 304 -
+2025-07-31 16:04:12,107 - werkzeug - INFO - 127.0.0.1 - - [31/Jul/2025 16:04:12] "[36mGET /child/dashboard?__debugger__=yes&cmd=resource&f=console.png HTTP/1.1[0m" 304 -
+2025-07-31 16:05:20,206 - apscheduler.scheduler - INFO - Added job "scheduled_backup" to job store "default"
+2025-07-31 16:05:20,622 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://10.1.23.19:5000
+2025-07-31 16:05:20,622 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-07-31 16:05:20,624 - werkzeug - INFO -  * Restarting with stat
+2025-07-31 16:05:21,875 - apscheduler.scheduler - INFO - Added job "scheduled_backup" to job store "default"
+2025-07-31 16:05:21,918 - werkzeug - WARNING -  * Debugger is active!
+2025-07-31 16:05:21,921 - werkzeug - INFO -  * Debugger PIN: 145-052-169
+2025-07-31 16:05:23,058 - werkzeug - INFO - 127.0.0.1 - - [31/Jul/2025 16:05:23] "GET / HTTP/1.1" 200 -
+2025-07-31 16:05:24,029 - werkzeug - INFO - 127.0.0.1 - - [31/Jul/2025 16:05:24] "GET / HTTP/1.1" 200 -
+2025-07-31 16:05:32,057 - werkzeug - INFO -  * Detected change in 'C:\\Users\\brandon.prescher\\Desktop\\SavageHomeschoolOS\\app.py', reloading
+2025-07-31 16:05:32,228 - werkzeug - INFO -  * Restarting with stat
+2025-07-31 16:05:33,441 - apscheduler.scheduler - INFO - Added job "scheduled_backup" to job store "default"
+2025-07-31 16:05:33,488 - werkzeug - WARNING -  * Debugger is active!
+2025-07-31 16:05:33,491 - werkzeug - INFO -  * Debugger PIN: 145-052-169
+2025-07-31 16:05:34,275 - werkzeug - INFO - 127.0.0.1 - - [31/Jul/2025 16:05:34] "GET /login HTTP/1.1" 200 -
+2025-07-31 16:05:35,593 - werkzeug - INFO - 127.0.0.1 - - [31/Jul/2025 16:05:35] "GET / HTTP/1.1" 200 -
+2025-07-31 16:05:45,316 - werkzeug - INFO - 127.0.0.1 - - [31/Jul/2025 16:05:45] "[32mPOST /login HTTP/1.1[0m" 302 -
+2025-07-31 16:05:45,339 - werkzeug - INFO - 127.0.0.1 - - [31/Jul/2025 16:05:45] "GET /admin/dashboard HTTP/1.1" 200 -
+2025-07-31 16:05:56,024 - werkzeug - INFO - 127.0.0.1 - - [31/Jul/2025 16:05:56] "POST /api/admin/users HTTP/1.1" 200 -
+2025-07-31 16:05:56,340 - werkzeug - INFO - 127.0.0.1 - - [31/Jul/2025 16:05:56] "GET /admin/dashboard HTTP/1.1" 200 -
+2025-07-31 16:05:56,364 - werkzeug - INFO - 127.0.0.1 - - [31/Jul/2025 16:05:56] "[33mGET /static/avatars/default.png HTTP/1.1[0m" 404 -
+2025-07-31 16:05:58,154 - werkzeug - INFO - 127.0.0.1 - - [31/Jul/2025 16:05:58] "[32mGET /logout HTTP/1.1[0m" 302 -
+2025-07-31 16:05:58,449 - werkzeug - INFO - 127.0.0.1 - - [31/Jul/2025 16:05:58] "GET / HTTP/1.1" 200 -
+2025-07-31 16:05:59,828 - werkzeug - INFO - 127.0.0.1 - - [31/Jul/2025 16:05:59] "GET /login HTTP/1.1" 200 -
+2025-07-31 16:06:05,547 - werkzeug - INFO - 127.0.0.1 - - [31/Jul/2025 16:06:05] "[32mPOST /login HTTP/1.1[0m" 302 -
+2025-07-31 16:06:05,565 - werkzeug - INFO - 127.0.0.1 - - [31/Jul/2025 16:06:05] "GET /child/dashboard HTTP/1.1" 200 -

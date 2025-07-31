@@ -429,7 +429,7 @@
             pin: document.getElementById('new_pin').value
         };
         
-        fetch('/api/users', {
+        fetch('/api/admin/users', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -453,7 +453,7 @@
     
     function deleteUser(userId) {
         if (confirm('Are you sure you want to delete this user?')) {
-            fetch(`/api/users/${userId}`, {
+            fetch(`/api/admin/users/${userId}`, {
                 method: 'DELETE'
             })
             .then(response => response.json())

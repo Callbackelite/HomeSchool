@@ -471,7 +471,13 @@ def get_user_progress(user_id):
     return progress
 
 def get_user_rewards(user_id):
-    rewards = Reward.query.filter_by(user_id=user_id).all()
+    # Get user's inventory items (rewards they own)
+    inventory_items = Inventory.query.filter_by(user_id=user_id).all()
+    rewards = []
+    for item in inventory_items:
+        reward = Reward.query.get(item.reward_id)
+        if reward:
+            rewards.append(reward)
     return rewards
 
 def process_uploaded_file(file_path, subject, grade_level, level, lesson_type):
@@ -589,22 +595,6 @@ def scheduled_backup():
 
 # Schedule daily backup at 2 AM
 scheduler.add_job(scheduled_backup, 'cron', hour=2)
-
-# Create database tables
-with app.app_context():
-    db.create_all()
-    
-    # Create default admin user if none exists
-    admin_user = User.query.filter_by(role='admin').first()
-    if not admin_user:
-        admin_user = User(
-            username='admin',
-            email='admin@savagehomeschool.com',
-            password_hash=generate_password_hash('admin123'),
-            role='admin'
-        )
-        db.session.add(admin_user)
-        db.session.commit()
 
 # Add these new routes after the existing routes
 
@@ -864,16 +854,13 @@ def create_user():
     if current_user.role != 'admin':
         return jsonify({'success': False, 'message': 'Admin access required'})
     
-    username = request.form.get('username')
-    email = request.form.get('email')
-    first_name = request.form.get('first_name')
-    last_name = request.form.get('last_name')
-    role = request.form.get('role')
-    grade_level = request.form.get('grade_level')
-    password = request.form.get('password')
-    pin = request.form.get('pin')
-    parent_id = request.form.get('parent_id')
-    status = request.form.get('status', 'active')
+    data = request.get_json()
+    username = data.get('username')
+    email = data.get('email')
+    role = data.get('role')
+    grade_level = data.get('grade_level')
+    pin = data.get('pin')
+    status = 'active'
     
     # Check if user already exists
     if User.query.filter_by(username=username).first():
@@ -883,24 +870,27 @@ def create_user():
         return jsonify({'success': False, 'message': 'Email already exists'})
     
     # Create new user
+    # Generate a default password for non-child users
+    if role == 'child':
+        password = 'child123'  # Default password for children
+    else:
+        password = 'parent123'  # Default password for parents
+    
     hashed_password = generate_password_hash(password)
     user = User(
         username=username,
         email=email,
-        first_name=first_name,
-        last_name=last_name,
         role=role,
         grade_level=grade_level,
         password_hash=hashed_password,
         pin=pin,
-        parent_id=parent_id,
         status=status
     )
     
     db.session.add(user)
     db.session.commit()
     
-    return jsonify({'success': True, 'message': 'User created successfully'})
+    return jsonify({'status': 'success', 'message': 'User created successfully'})
 
 @app.route('/api/admin/users/<int:user_id>', methods=['GET'])
 @login_required
@@ -913,7 +903,7 @@ def get_user_details(user_id):
     # Generate HTML for user details
     html = f"""
     <div class="user-details">
-        <h4>{user.first_name} {user.last_name}</h4>
+        <h4>{user.username}</h4>
         <p><strong>Email:</strong> {user.email}</p>
         <p><strong>Username:</strong> {user.username}</p>
         <p><strong>Role:</strong> {user.role}</p>
@@ -977,7 +967,7 @@ def delete_user(user_id):
     db.session.delete(user)
     db.session.commit()
     
-    return jsonify({'success': True, 'message': 'User deleted successfully'})
+    return jsonify({'status': 'success', 'message': 'User deleted successfully'})
 
 @app.route('/api/admin/users/bulk-action', methods=['POST'])
 @login_required
@@ -1164,6 +1154,22 @@ class Inventory(db.Model):
     reward_id = db.Column(db.Integer, db.ForeignKey('reward.id'), nullable=False)
     purchased_at = db.Column(db.DateTime, default=datetime.datetime.utcnow)
     used_at = db.Column(db.DateTime, nullable=True)
+
+# Create database tables (moved here after all models are defined)
+with app.app_context():
+    db.create_all()
+    
+    # Create default admin user if none exists
+    admin_user = User.query.filter_by(role='admin').first()
+    if not admin_user:
+        admin_user = User(
+            username='admin',
+            email='admin@savagehomeschool.com',
+            password_hash=generate_password_hash('admin123'),
+            role='admin'
+        )
+        db.session.add(admin_user)
+        db.session.commit()
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=5000) 
