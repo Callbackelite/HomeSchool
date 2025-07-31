@@ -15,3 +15,4 @@
 2025-07-31 15:30:11,590 - werkzeug - INFO - 127.0.0.1 - - [31/Jul/2025 15:30:11] "[32mPOST /login HTTP/1.1[0m" 302 -
 2025-07-31 15:30:11,610 - werkzeug - INFO - 127.0.0.1 - - [31/Jul/2025 15:30:11] "GET /admin/dashboard HTTP/1.1" 200 -
 2025-07-31 15:30:41,873 - werkzeug - INFO - 127.0.0.1 - - [31/Jul/2025 15:30:41] "GET /admin/dashboard HTTP/1.1" 200 -
+2025-07-31 15:48:01,269 - apscheduler.scheduler - INFO - Added job "scheduled_backup" to job store "default"

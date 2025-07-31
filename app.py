@@ -88,9 +88,17 @@ class User(UserMixin, db.Model):
     last_login = db.Column(db.DateTime, nullable=True)
     is_active = db.Column(db.Boolean, default=True)
     
+    # Additional fields for gamification
+    total_xp = db.Column(db.Integer, default=0)
+    lessons_completed = db.Column(db.Integer, default=0)
+    badges_earned = db.Column(db.Integer, default=0)
+    current_level = db.Column(db.Integer, default=1)
+    streak_days = db.Column(db.Integer, default=0)
+    parent_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=True)
+    status = db.Column(db.String(20), default='active')  # active, inactive, suspended
+    
     # Relationships
     progress = db.relationship('Progress', backref='user', lazy=True)
-    rewards = db.relationship('Reward', backref='user', lazy=True)
     activities = db.relationship('ActivityLog', backref='user', lazy=True)
     reading_logs = db.relationship('ReadingLog', backref='user', lazy=True)
     custom_courses = db.relationship('CustomCourse', backref='creator', lazy=True)
@@ -147,15 +155,7 @@ class Progress(db.Model):
     created_at = db.Column(db.DateTime, default=datetime.datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.datetime.utcnow, onupdate=datetime.datetime.utcnow)
 
-class Reward(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    reward_type = db.Column(db.String(50), nullable=False)  # xp, badge, avatar_item, theme
-    reward_name = db.Column(db.String(100), nullable=False)
-    reward_value = db.Column(db.Integer, nullable=False)
-    description = db.Column(db.Text, nullable=True)
-    earned_at = db.Column(db.DateTime, default=datetime.datetime.utcnow)
-    is_used = db.Column(db.Boolean, default=False)
+
 
 class ActivityLog(db.Model):
     id = db.Column(db.Integer, primary_key=True)
