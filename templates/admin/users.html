@@ -1,0 +1,816 @@
+{% extends "base.html" %}
+{% block title %}User Management - Savage Homeschool OS{% endblock %}
+
+{% block extra_css %}
+<style>
+.user-management {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 15px;
+    padding: 20px;
+    margin-bottom: 20px;
+    color: white;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+}
+
+.user-card {
+    background: white;
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    border-left: 4px solid #667eea;
+    transition: all 0.3s ease;
+}
+
+.user-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+}
+
+.user-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.user-avatar {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: linear-gradient(45deg, #667eea, #764ba2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1.5em;
+    font-weight: bold;
+}
+
+.user-details h5 {
+    margin-bottom: 5px;
+    color: #333;
+}
+
+.user-role {
+    background: linear-gradient(45deg, #ff6b6b, #feca57);
+    color: white;
+    padding: 4px 12px;
+    border-radius: 15px;
+    font-size: 0.8em;
+    font-weight: bold;
+}
+
+.user-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 15px;
+    margin: 15px 0;
+}
+
+.stat-item {
+    text-align: center;
+    padding: 10px;
+    background: #f8f9fa;
+    border-radius: 8px;
+}
+
+.stat-number {
+    font-size: 1.5em;
+    font-weight: bold;
+    color: #667eea;
+    margin-bottom: 5px;
+}
+
+.stat-label {
+    font-size: 0.8em;
+    color: #666;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.user-actions {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.action-btn {
+    background: none;
+    border: 1px solid #ddd;
+    padding: 8px 15px;
+    border-radius: 20px;
+    font-size: 0.9em;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.action-btn:hover {
+    transform: scale(1.05);
+}
+
+.action-btn.edit:hover {
+    background: #667eea;
+    color: white;
+    border-color: #667eea;
+}
+
+.action-btn.delete:hover {
+    background: #dc3545;
+    color: white;
+    border-color: #dc3545;
+}
+
+.action-btn.reset:hover {
+    background: #ffc107;
+    color: white;
+    border-color: #ffc107;
+}
+
+.action-btn.view:hover {
+    background: #28a745;
+    color: white;
+    border-color: #28a745;
+}
+
+.user-filters {
+    background: white;
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+.filter-group {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.filter-label {
+    font-weight: bold;
+    color: #333;
+}
+
+.filter-select {
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 8px 12px;
+    background: white;
+}
+
+.add-user-section {
+    background: white;
+    border-radius: 10px;
+    padding: 25px;
+    margin-bottom: 30px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 15px;
+    margin-bottom: 15px;
+}
+
+.permission-section {
+    background: white;
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+.permission-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+}
+
+.permission-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px;
+    background: #f8f9fa;
+    border-radius: 8px;
+}
+
+.permission-checkbox {
+    width: 18px;
+    height: 18px;
+    accent-color: #667eea;
+}
+
+.bulk-actions {
+    background: white;
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+.bulk-action-btn {
+    background: linear-gradient(45deg, #667eea, #764ba2);
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 20px;
+    font-weight: bold;
+    transition: all 0.3s ease;
+    margin-right: 10px;
+}
+
+.bulk-action-btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+}
+
+.user-status {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 15px;
+    font-size: 0.8em;
+    font-weight: bold;
+}
+
+.status-active {
+    background: linear-gradient(45deg, #28a745, #20c997);
+    color: white;
+}
+
+.status-inactive {
+    background: linear-gradient(45deg, #6c757d, #495057);
+    color: white;
+}
+
+.status-suspended {
+    background: linear-gradient(45deg, #dc3545, #c82333);
+    color: white;
+}
+
+.search-box {
+    position: relative;
+    margin-bottom: 20px;
+}
+
+.search-input {
+    width: 100%;
+    padding: 12px 45px 12px 15px;
+    border: 2px solid #e9ecef;
+    border-radius: 25px;
+    font-size: 1em;
+    transition: border-color 0.3s ease;
+}
+
+.search-input:focus {
+    border-color: #667eea;
+    outline: none;
+    box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+}
+
+.search-icon {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #666;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="welcome-message">
+        <h1><i class="fas fa-users me-3"></i>User Management</h1>
+        <p class="lead">Manage all users in the Savage Homeschool OS</p>
+    </div>
+
+    <!-- User Statistics -->
+    <div class="user-management">
+        <h3><i class="fas fa-chart-pie me-2"></i>User Statistics</h3>
+        <div class="row">
+            <div class="col-md-3">
+                <div class="text-center">
+                    <div class="display-4">{{ stats.total_users }}</div>
+                    <div>Total Users</div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="text-center">
+                    <div class="display-4">{{ stats.active_users }}</div>
+                    <div>Active Users</div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="text-center">
+                    <div class="display-4">{{ stats.children }}</div>
+                    <div>Children</div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="text-center">
+                    <div class="display-4">{{ stats.parents }}</div>
+                    <div>Parents</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add New User -->
+    <div class="add-user-section">
+        <h4><i class="fas fa-user-plus me-2"></i>Add New User</h4>
+        <form id="addUserForm">
+            <div class="form-row">
+                <div>
+                    <label for="username" class="form-label">Username</label>
+                    <input type="text" class="form-control" id="username" name="username" required>
+                </div>
+                <div>
+                    <label for="email" class="form-label">Email</label>
+                    <input type="email" class="form-control" id="email" name="email" required>
+                </div>
+            </div>
+            
+            <div class="form-row">
+                <div>
+                    <label for="firstName" class="form-label">First Name</label>
+                    <input type="text" class="form-control" id="firstName" name="first_name" required>
+                </div>
+                <div>
+                    <label for="lastName" class="form-label">Last Name</label>
+                    <input type="text" class="form-control" id="lastName" name="last_name" required>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div>
+                    <label for="userRole" class="form-label">Role</label>
+                    <select class="form-control" id="userRole" name="role" required>
+                        <option value="">Select Role</option>
+                        <option value="admin">Admin</option>
+                        <option value="parent">Parent</option>
+                        <option value="child">Child</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="gradeLevel" class="form-label">Grade Level (for children)</label>
+                    <select class="form-control" id="gradeLevel" name="grade_level">
+                        <option value="">Select Grade</option>
+                        <option value="K">Kindergarten</option>
+                        <option value="1">Grade 1</option>
+                        <option value="2">Grade 2</option>
+                        <option value="3">Grade 3</option>
+                        <option value="4">Grade 4</option>
+                        <option value="5">Grade 5</option>
+                        <option value="6">Grade 6</option>
+                        <option value="7">Grade 7</option>
+                        <option value="8">Grade 8</option>
+                        <option value="9">Grade 9</option>
+                        <option value="10">Grade 10</option>
+                        <option value="11">Grade 11</option>
+                        <option value="12">Grade 12</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div>
+                    <label for="password" class="form-label">Password</label>
+                    <input type="password" class="form-control" id="password" name="password" required>
+                </div>
+                <div>
+                    <label for="pin" class="form-label">PIN (for children)</label>
+                    <input type="text" class="form-control" id="pin" name="pin" maxlength="4" pattern="[0-9]{4}">
+                    <small class="text-muted">4-digit PIN for child login</small>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div>
+                    <label for="parentUser" class="form-label">Parent (for children)</label>
+                    <select class="form-control" id="parentUser" name="parent_id">
+                        <option value="">Select Parent</option>
+                        {% for parent in parents %}
+                        <option value="{{ parent.id }}">{{ parent.first_name }} {{ parent.last_name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div>
+                    <label for="userStatus" class="form-label">Status</label>
+                    <select class="form-control" id="userStatus" name="status">
+                        <option value="active">Active</option>
+                        <option value="inactive">Inactive</option>
+                        <option value="suspended">Suspended</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="d-flex justify-content-between">
+                <button type="button" class="btn btn-outline-secondary" onclick="resetForm()">
+                    <i class="fas fa-undo me-1"></i>Reset
+                </button>
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-user-plus me-1"></i>Add User
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <!-- User Filters -->
+    <div class="user-filters">
+        <h5><i class="fas fa-filter me-2"></i>Filter Users</h5>
+        <div class="filter-group">
+            <div>
+                <label class="filter-label">Role:</label>
+                <select class="filter-select" id="roleFilter" aria-label="Filter by user role">
+                    <option value="all">All Roles</option>
+                    <option value="admin">Admin</option>
+                    <option value="parent">Parent</option>
+                    <option value="child">Child</option>
+                </select>
+            </div>
+            <div>
+                <label class="filter-label">Status:</label>
+                <select class="filter-select" id="statusFilter" aria-label="Filter by user status">
+                    <option value="all">All Status</option>
+                    <option value="active">Active</option>
+                    <option value="inactive">Inactive</option>
+                    <option value="suspended">Suspended</option>
+                </select>
+            </div>
+            <div>
+                <label class="filter-label">Grade:</label>
+                <select class="filter-select" id="gradeFilter" aria-label="Filter by grade level">
+                    <option value="all">All Grades</option>
+                    <option value="K">Kindergarten</option>
+                    <option value="1">Grade 1</option>
+                    <option value="2">Grade 2</option>
+                    <option value="3">Grade 3</option>
+                    <option value="4">Grade 4</option>
+                    <option value="5">Grade 5</option>
+                    <option value="6">Grade 6</option>
+                    <option value="7">Grade 7</option>
+                    <option value="8">Grade 8</option>
+                    <option value="9">Grade 9</option>
+                    <option value="10">Grade 10</option>
+                    <option value="11">Grade 11</option>
+                    <option value="12">Grade 12</option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <!-- Search Box -->
+    <div class="search-box">
+        <input type="text" class="search-input" id="userSearch" placeholder="Search users by name, email, or username...">
+        <i class="fas fa-search search-icon"></i>
+    </div>
+
+    <!-- Bulk Actions -->
+    <div class="bulk-actions">
+        <h5><i class="fas fa-tasks me-2"></i>Bulk Actions</h5>
+        <button class="bulk-action-btn" onclick="bulkAction('activate')">
+            <i class="fas fa-check me-1"></i>Activate Selected
+        </button>
+        <button class="bulk-action-btn" onclick="bulkAction('deactivate')">
+            <i class="fas fa-pause me-1"></i>Deactivate Selected
+        </button>
+        <button class="bulk-action-btn" onclick="bulkAction('delete')">
+            <i class="fas fa-trash me-1"></i>Delete Selected
+        </button>
+        <button class="bulk-action-btn" onclick="bulkAction('export')">
+            <i class="fas fa-download me-1"></i>Export Selected
+        </button>
+    </div>
+
+    <!-- User List -->
+    <div class="user-management">
+        <h3><i class="fas fa-list me-2"></i>All Users</h3>
+        <p class="mb-4">Manage user accounts and permissions</p>
+    </div>
+
+    {% for user in users %}
+    <div class="user-card">
+        <div class="user-header">
+            <div class="user-info">
+                <div class="user-avatar">
+                    {{ user.first_name[0] }}{{ user.last_name[0] }}
+                </div>
+                <div class="user-details">
+                    <h5>{{ user.first_name }} {{ user.last_name }}</h5>
+                    <p class="mb-1">{{ user.email }}</p>
+                    <p class="mb-0">@{{ user.username }}</p>
+                </div>
+            </div>
+            <div class="d-flex align-items-center gap-3">
+                <span class="user-role">{{ user.role|title }}</span>
+                <span class="user-status status-{{ user.status }}">
+                    {{ user.status|title }}
+                </span>
+            </div>
+        </div>
+
+        <div class="user-stats">
+            <div class="stat-item">
+                <div class="stat-number">{{ user.total_xp|default(0) }}</div>
+                <div class="stat-label">Total XP</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">{{ user.lessons_completed|default(0) }}</div>
+                <div class="stat-label">Lessons</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">{{ user.streak_days|default(0) }}</div>
+                <div class="stat-label">Streak</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">{{ user.last_login|default('Never') }}</div>
+                <div class="stat-label">Last Login</div>
+            </div>
+        </div>
+
+        <div class="user-actions">
+            <button class="action-btn view" onclick="viewUser({{ user.id }})">
+                <i class="fas fa-eye"></i>View
+            </button>
+            <button class="action-btn edit" onclick="editUser({{ user.id }})">
+                <i class="fas fa-edit"></i>Edit
+            </button>
+            <button class="action-btn reset" onclick="resetPassword({{ user.id }})">
+                <i class="fas fa-key"></i>Reset Password
+            </button>
+            {% if user.role == 'child' %}
+            <button class="action-btn edit" onclick="resetPin({{ user.id }})">
+                <i class="fas fa-unlock"></i>Reset PIN
+            </button>
+            {% endif %}
+            <button class="action-btn delete" onclick="deleteUser({{ user.id }})">
+                <i class="fas fa-trash"></i>Delete
+            </button>
+        </div>
+    </div>
+    {% else %}
+    <div class="user-card">
+        <div class="text-center py-4">
+            <i class="fas fa-users fa-3x text-muted mb-3"></i>
+            <h5>No Users Found</h5>
+            <p class="text-muted">Add some users to get started!</p>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<!-- User Details Modal -->
+<div class="modal fade" id="userModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">User Details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="userModalContent">
+                <!-- User details will be loaded here -->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" onclick="editUserFromModal()">Edit User</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Search functionality
+document.getElementById('userSearch').addEventListener('input', function() {
+    const searchTerm = this.value.toLowerCase();
+    const userCards = document.querySelectorAll('.user-card');
+    
+    userCards.forEach(card => {
+        const userName = card.querySelector('h5').textContent.toLowerCase();
+        const userEmail = card.querySelector('p').textContent.toLowerCase();
+        const username = card.querySelectorAll('p')[1].textContent.toLowerCase();
+        
+        if (userName.includes(searchTerm) || userEmail.includes(searchTerm) || username.includes(searchTerm)) {
+            card.style.display = 'block';
+        } else {
+            card.style.display = 'none';
+        }
+    });
+});
+
+// Filter functionality
+function applyFilters() {
+    const roleFilter = document.getElementById('roleFilter').value;
+    const statusFilter = document.getElementById('statusFilter').value;
+    const gradeFilter = document.getElementById('gradeFilter').value;
+    
+    const userCards = document.querySelectorAll('.user-card');
+    
+    userCards.forEach(card => {
+        const userRole = card.querySelector('.user-role').textContent.toLowerCase();
+        const userStatus = card.querySelector('.user-status').textContent.toLowerCase();
+        
+        let showCard = true;
+        
+        if (roleFilter !== 'all' && userRole !== roleFilter) {
+            showCard = false;
+        }
+        
+        if (statusFilter !== 'all' && userStatus !== statusFilter) {
+            showCard = false;
+        }
+        
+        card.style.display = showCard ? 'block' : 'none';
+    });
+}
+
+document.getElementById('roleFilter').addEventListener('change', applyFilters);
+document.getElementById('statusFilter').addEventListener('change', applyFilters);
+document.getElementById('gradeFilter').addEventListener('change', applyFilters);
+
+// Form handling
+document.getElementById('addUserForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    const formData = new FormData(this);
+    
+    fetch('/api/admin/users', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            showNotification('User added successfully!', 'success');
+            setTimeout(() => {
+                location.reload();
+            }, 1500);
+        } else {
+            showNotification('Failed to add user: ' + data.message, 'error');
+        }
+    })
+    .catch(error => {
+        showNotification('Error adding user', 'error');
+    });
+});
+
+function resetForm() {
+    document.getElementById('addUserForm').reset();
+}
+
+function viewUser(userId) {
+    fetch(`/api/admin/users/${userId}`)
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            document.getElementById('userModalContent').innerHTML = data.html;
+            new bootstrap.Modal(document.getElementById('userModal')).show();
+        } else {
+            showNotification('Failed to load user details', 'error');
+        }
+    })
+    .catch(error => {
+        showNotification('Error loading user details', 'error');
+    });
+}
+
+function editUser(userId) {
+    // Load user data into form or redirect to edit page
+    window.location.href = `/admin/users/${userId}/edit`;
+}
+
+function resetPassword(userId) {
+    if (confirm('Are you sure you want to reset this user\'s password?')) {
+        fetch(`/api/admin/users/${userId}/reset-password`, {
+            method: 'POST'
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                showNotification('Password reset successfully!', 'success');
+            } else {
+                showNotification('Failed to reset password: ' + data.message, 'error');
+            }
+        })
+        .catch(error => {
+            showNotification('Error resetting password', 'error');
+        });
+    }
+}
+
+function resetPin(userId) {
+    if (confirm('Are you sure you want to reset this child\'s PIN?')) {
+        fetch(`/api/admin/users/${userId}/reset-pin`, {
+            method: 'POST'
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                showNotification('PIN reset successfully!', 'success');
+            } else {
+                showNotification('Failed to reset PIN: ' + data.message, 'error');
+            }
+        })
+        .catch(error => {
+            showNotification('Error resetting PIN', 'error');
+        });
+    }
+}
+
+function deleteUser(userId) {
+    if (confirm('Are you sure you want to delete this user? This action cannot be undone.')) {
+        fetch(`/api/admin/users/${userId}`, {
+            method: 'DELETE'
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                showNotification('User deleted successfully!', 'success');
+                setTimeout(() => {
+                    location.reload();
+                }, 1500);
+            } else {
+                showNotification('Failed to delete user: ' + data.message, 'error');
+            }
+        })
+        .catch(error => {
+            showNotification('Error deleting user', 'error');
+        });
+    }
+}
+
+function bulkAction(action) {
+    const selectedUsers = getSelectedUsers();
+    
+    if (selectedUsers.length === 0) {
+        showNotification('Please select users first', 'warning');
+        return;
+    }
+    
+    if (confirm(`Are you sure you want to ${action} the selected users?`)) {
+        fetch('/api/admin/users/bulk-action', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                action: action,
+                user_ids: selectedUsers
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                showNotification(`Bulk action '${action}' completed successfully!`, 'success');
+                setTimeout(() => {
+                    location.reload();
+                }, 1500);
+            } else {
+                showNotification('Failed to perform bulk action: ' + data.message, 'error');
+            }
+        })
+        .catch(error => {
+            showNotification('Error performing bulk action', 'error');
+        });
+    }
+}
+
+function getSelectedUsers() {
+    // This would get selected users from checkboxes
+    // For now, return empty array
+    return [];
+}
+
+// Role-based form changes
+document.getElementById('userRole').addEventListener('change', function() {
+    const role = this.value;
+    const gradeLevel = document.getElementById('gradeLevel');
+    const pin = document.getElementById('pin');
+    const parentUser = document.getElementById('parentUser');
+    
+    if (role === 'child') {
+        gradeLevel.required = true;
+        pin.required = true;
+        parentUser.required = true;
+    } else {
+        gradeLevel.required = false;
+        pin.required = false;
+        parentUser.required = false;
+    }
+});
+</script>
+{% endblock %} 

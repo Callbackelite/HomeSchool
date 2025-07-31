@@ -606,5 +606,564 @@ with app.app_context():
         db.session.add(admin_user)
         db.session.commit()
 
+# Add these new routes after the existing routes
+
+@app.route('/child/progress')
+@login_required
+def child_progress():
+    if current_user.role != 'child':
+        return redirect(url_for('login'))
+    
+    # Get user progress data
+    subjects = get_user_progress(current_user.id)
+    achievements = get_user_achievements(current_user.id)
+    recent_activities = get_recent_activities(current_user.id)
+    
+    return render_template('child/progress.html', 
+                         user=current_user,
+                         subjects=subjects,
+                         achievements=achievements,
+                         recent_activities=recent_activities)
+
+@app.route('/child/rewards')
+@login_required
+def child_rewards():
+    if current_user.role != 'child':
+        return redirect(url_for('login'))
+    
+    # Get available rewards
+    avatar_rewards = get_rewards_by_category('avatar')
+    game_rewards = get_rewards_by_category('game')
+    privilege_rewards = get_rewards_by_category('privilege')
+    inventory = get_user_inventory(current_user.id)
+    
+    return render_template('child/rewards.html',
+                         user=current_user,
+                         avatar_rewards=avatar_rewards,
+                         game_rewards=game_rewards,
+                         privilege_rewards=privilege_rewards,
+                         inventory=inventory)
+
+@app.route('/child/journal')
+@login_required
+def child_journal():
+    if current_user.role != 'child':
+        return redirect(url_for('login'))
+    
+    # Get journal data
+    journal_entries = get_journal_entries(current_user.id)
+    journal_stats = get_journal_stats(current_user.id)
+    daily_prompt = get_daily_prompt()
+    
+    return render_template('child/journal.html',
+                         user=current_user,
+                         journal_entries=journal_entries,
+                         journal_stats=journal_stats,
+                         daily_prompt=daily_prompt)
+
+@app.route('/admin/users')
+@login_required
+def admin_users():
+    if current_user.role != 'admin':
+        return redirect(url_for('login'))
+    
+    # Get all users and stats
+    users = User.query.all()
+    stats = get_user_stats()
+    parents = User.query.filter_by(role='parent').all()
+    
+    return render_template('admin/users.html',
+                         users=users,
+                         stats=stats,
+                         parents=parents)
+
+# API Routes for functionality
+
+@app.route('/api/purchase_reward', methods=['POST'])
+@login_required
+def purchase_reward():
+    if current_user.role != 'child':
+        return jsonify({'success': False, 'message': 'Only children can purchase rewards'})
+    
+    data = request.get_json()
+    reward_id = data.get('reward_id')
+    
+    reward = Reward.query.get(reward_id)
+    if not reward:
+        return jsonify({'success': False, 'message': 'Reward not found'})
+    
+    if current_user.total_xp < reward.xp_cost:
+        return jsonify({'success': False, 'message': 'Not enough XP'})
+    
+    # Purchase the reward
+    current_user.total_xp -= reward.xp_cost
+    add_to_inventory(current_user.id, reward_id)
+    
+    db.session.commit()
+    
+    return jsonify({'success': True, 'message': 'Reward purchased successfully'})
+
+@app.route('/api/use_item', methods=['POST'])
+@login_required
+def use_item():
+    data = request.get_json()
+    item_id = data.get('item_id')
+    
+    # Use the item (implement based on item type)
+    success = use_inventory_item(current_user.id, item_id)
+    
+    if success:
+        return jsonify({'success': True, 'message': 'Item used successfully'})
+    else:
+        return jsonify({'success': False, 'message': 'Failed to use item'})
+
+@app.route('/api/mystery_reward', methods=['POST'])
+@login_required
+def mystery_reward():
+    if current_user.role != 'child':
+        return jsonify({'success': False, 'message': 'Only children can get mystery rewards'})
+    
+    if current_user.total_xp < 50:
+        return jsonify({'success': False, 'message': 'Not enough XP'})
+    
+    # Get random reward
+    reward = get_random_reward()
+    current_user.total_xp -= 50
+    add_to_inventory(current_user.id, reward.id)
+    
+    db.session.commit()
+    
+    return jsonify({'success': True, 'reward': {
+        'name': reward.name,
+        'description': reward.description,
+        'icon': reward.icon
+    }})
+
+@app.route('/api/journal/entry', methods=['POST'])
+@login_required
+def create_journal_entry():
+    if current_user.role != 'child':
+        return jsonify({'success': False, 'message': 'Only children can create journal entries'})
+    
+    title = request.form.get('title', '')
+    content = request.form.get('content', '')
+    tags = request.form.get('tags', '')
+    mood = request.form.get('mood', 'neutral')
+    is_draft = request.form.get('is_draft', 'false') == 'true'
+    
+    if not content:
+        return jsonify({'success': False, 'message': 'Content is required'})
+    
+    # Create journal entry
+    entry = JournalEntry(
+        user_id=current_user.id,
+        title=title,
+        content=content,
+        tags=tags,
+        mood=mood,
+        is_draft=is_draft
+    )
+    
+    db.session.add(entry)
+    db.session.commit()
+    
+    return jsonify({'success': True, 'message': 'Journal entry created successfully'})
+
+@app.route('/api/journal/draft', methods=['POST'])
+@login_required
+def save_journal_draft():
+    if current_user.role != 'child':
+        return jsonify({'success': False, 'message': 'Only children can save drafts'})
+    
+    title = request.form.get('title', '')
+    content = request.form.get('content', '')
+    tags = request.form.get('tags', '')
+    mood = request.form.get('mood', 'neutral')
+    
+    # Save or update draft
+    draft = JournalEntry.query.filter_by(
+        user_id=current_user.id, 
+        is_draft=True
+    ).first()
+    
+    if draft:
+        draft.title = title
+        draft.content = content
+        draft.tags = tags
+        draft.mood = mood
+    else:
+        draft = JournalEntry(
+            user_id=current_user.id,
+            title=title,
+            content=content,
+            tags=tags,
+            mood=mood,
+            is_draft=True
+        )
+        db.session.add(draft)
+    
+    db.session.commit()
+    
+    return jsonify({'success': True, 'message': 'Draft saved successfully'})
+
+@app.route('/api/journal/entry/<int:entry_id>', methods=['GET'])
+@login_required
+def get_journal_entry(entry_id):
+    entry = JournalEntry.query.get_or_404(entry_id)
+    
+    if entry.user_id != current_user.id and current_user.role != 'admin':
+        return jsonify({'success': False, 'message': 'Access denied'})
+    
+    return jsonify({
+        'success': True,
+        'entry': {
+            'id': entry.id,
+            'title': entry.title,
+            'content': entry.content,
+            'tags': entry.tags,
+            'mood': entry.mood
+        }
+    })
+
+@app.route('/api/journal/entry/<int:entry_id>', methods=['DELETE'])
+@login_required
+def delete_journal_entry(entry_id):
+    entry = JournalEntry.query.get_or_404(entry_id)
+    
+    if entry.user_id != current_user.id and current_user.role != 'admin':
+        return jsonify({'success': False, 'message': 'Access denied'})
+    
+    db.session.delete(entry)
+    db.session.commit()
+    
+    return jsonify({'success': True, 'message': 'Entry deleted successfully'})
+
+@app.route('/api/journal/export', methods=['POST'])
+@login_required
+def export_journal():
+    if current_user.role != 'child':
+        return jsonify({'success': False, 'message': 'Only children can export journals'})
+    
+    data = request.get_json()
+    format_type = data.get('format', 'txt')
+    filters = data.get('filters', {})
+    
+    # Get filtered entries
+    entries = get_filtered_journal_entries(current_user.id, filters)
+    
+    if format_type == 'pdf':
+        return export_journal_pdf(entries)
+    elif format_type == 'json':
+        return export_journal_json(entries)
+    else:
+        return export_journal_txt(entries)
+
+@app.route('/api/admin/users', methods=['POST'])
+@login_required
+def create_user():
+    if current_user.role != 'admin':
+        return jsonify({'success': False, 'message': 'Admin access required'})
+    
+    username = request.form.get('username')
+    email = request.form.get('email')
+    first_name = request.form.get('first_name')
+    last_name = request.form.get('last_name')
+    role = request.form.get('role')
+    grade_level = request.form.get('grade_level')
+    password = request.form.get('password')
+    pin = request.form.get('pin')
+    parent_id = request.form.get('parent_id')
+    status = request.form.get('status', 'active')
+    
+    # Check if user already exists
+    if User.query.filter_by(username=username).first():
+        return jsonify({'success': False, 'message': 'Username already exists'})
+    
+    if User.query.filter_by(email=email).first():
+        return jsonify({'success': False, 'message': 'Email already exists'})
+    
+    # Create new user
+    hashed_password = generate_password_hash(password)
+    user = User(
+        username=username,
+        email=email,
+        first_name=first_name,
+        last_name=last_name,
+        role=role,
+        grade_level=grade_level,
+        password_hash=hashed_password,
+        pin=pin,
+        parent_id=parent_id,
+        status=status
+    )
+    
+    db.session.add(user)
+    db.session.commit()
+    
+    return jsonify({'success': True, 'message': 'User created successfully'})
+
+@app.route('/api/admin/users/<int:user_id>', methods=['GET'])
+@login_required
+def get_user_details(user_id):
+    if current_user.role != 'admin':
+        return jsonify({'success': False, 'message': 'Admin access required'})
+    
+    user = User.query.get_or_404(user_id)
+    
+    # Generate HTML for user details
+    html = f"""
+    <div class="user-details">
+        <h4>{user.first_name} {user.last_name}</h4>
+        <p><strong>Email:</strong> {user.email}</p>
+        <p><strong>Username:</strong> {user.username}</p>
+        <p><strong>Role:</strong> {user.role}</p>
+        <p><strong>Status:</strong> {user.status}</p>
+        <p><strong>Grade Level:</strong> {user.grade_level or 'N/A'}</p>
+        <p><strong>Total XP:</strong> {user.total_xp}</p>
+        <p><strong>Lessons Completed:</strong> {user.lessons_completed}</p>
+        <p><strong>Streak Days:</strong> {user.streak_days}</p>
+        <p><strong>Last Login:</strong> {user.last_login or 'Never'}</p>
+    </div>
+    """
+    
+    return jsonify({'success': True, 'html': html})
+
+@app.route('/api/admin/users/<int:user_id>/reset-password', methods=['POST'])
+@login_required
+def reset_user_password(user_id):
+    if current_user.role != 'admin':
+        return jsonify({'success': False, 'message': 'Admin access required'})
+    
+    user = User.query.get_or_404(user_id)
+    
+    # Generate new password
+    new_password = ''.join(random.choices(string.ascii_letters + string.digits, k=8))
+    user.password_hash = generate_password_hash(new_password)
+    
+    db.session.commit()
+    
+    return jsonify({'success': True, 'message': f'Password reset to: {new_password}'})
+
+@app.route('/api/admin/users/<int:user_id>/reset-pin', methods=['POST'])
+@login_required
+def reset_user_pin(user_id):
+    if current_user.role != 'admin':
+        return jsonify({'success': False, 'message': 'Admin access required'})
+    
+    user = User.query.get_or_404(user_id)
+    
+    if user.role != 'child':
+        return jsonify({'success': False, 'message': 'Only children have PINs'})
+    
+    # Generate new PIN
+    new_pin = ''.join(random.choices(string.digits, k=4))
+    user.pin = new_pin
+    
+    db.session.commit()
+    
+    return jsonify({'success': True, 'message': f'PIN reset to: {new_pin}'})
+
+@app.route('/api/admin/users/<int:user_id>', methods=['DELETE'])
+@login_required
+def delete_user(user_id):
+    if current_user.role != 'admin':
+        return jsonify({'success': False, 'message': 'Admin access required'})
+    
+    user = User.query.get_or_404(user_id)
+    
+    if user.id == current_user.id:
+        return jsonify({'success': False, 'message': 'Cannot delete yourself'})
+    
+    db.session.delete(user)
+    db.session.commit()
+    
+    return jsonify({'success': True, 'message': 'User deleted successfully'})
+
+@app.route('/api/admin/users/bulk-action', methods=['POST'])
+@login_required
+def bulk_user_action():
+    if current_user.role != 'admin':
+        return jsonify({'success': False, 'message': 'Admin access required'})
+    
+    data = request.get_json()
+    action = data.get('action')
+    user_ids = data.get('user_ids', [])
+    
+    users = User.query.filter(User.id.in_(user_ids)).all()
+    
+    for user in users:
+        if action == 'activate':
+            user.status = 'active'
+        elif action == 'deactivate':
+            user.status = 'inactive'
+        elif action == 'delete':
+            if user.id != current_user.id:
+                db.session.delete(user)
+    
+    db.session.commit()
+    
+    return jsonify({'success': True, 'message': f'Bulk action {action} completed'})
+
+# Helper functions
+
+def get_user_achievements(user_id):
+    """Get user achievements"""
+    # This would query achievements from database
+    return []
+
+def get_recent_activities(user_id):
+    """Get recent user activities"""
+    activities = ActivityLog.query.filter_by(user_id=user_id).order_by(ActivityLog.created_at.desc()).limit(10).all()
+    return activities
+
+def get_rewards_by_category(category):
+    """Get rewards by category"""
+    rewards = Reward.query.filter_by(category=category).all()
+    return rewards
+
+def get_user_inventory(user_id):
+    """Get user inventory"""
+    # This would query user inventory from database
+    return []
+
+def get_journal_entries(user_id):
+    """Get journal entries for user"""
+    entries = JournalEntry.query.filter_by(user_id=user_id, is_draft=False).order_by(JournalEntry.created_at.desc()).all()
+    return entries
+
+def get_journal_stats(user_id):
+    """Get journal statistics"""
+    total_entries = JournalEntry.query.filter_by(user_id=user_id, is_draft=False).count()
+    this_month = JournalEntry.query.filter(
+        JournalEntry.user_id == user_id,
+        JournalEntry.is_draft == False,
+        JournalEntry.created_at >= datetime.datetime.now().replace(day=1)
+    ).count()
+    
+    return {
+        'total_entries': total_entries,
+        'this_month': this_month,
+        'avg_length': 0,  # Calculate average word count
+        'streak': 0  # Calculate writing streak
+    }
+
+def get_daily_prompt():
+    """Get daily writing prompt"""
+    prompts = [
+        "What did you learn today that made you excited?",
+        "What was the most challenging part of today's learning?",
+        "What would you like to learn more about tomorrow?",
+        "How did you feel when you completed today's lesson?",
+        "What questions do you still have about today's topic?"
+    ]
+    return random.choice(prompts)
+
+def add_to_inventory(user_id, reward_id):
+    """Add item to user inventory"""
+    # This would add item to user inventory
+    pass
+
+def use_inventory_item(user_id, item_id):
+    """Use inventory item"""
+    # This would use inventory item
+    return True
+
+def get_random_reward():
+    """Get random reward"""
+    rewards = Reward.query.all()
+    return random.choice(rewards) if rewards else None
+
+def get_filtered_journal_entries(user_id, filters):
+    """Get filtered journal entries"""
+    query = JournalEntry.query.filter_by(user_id=user_id, is_draft=False)
+    
+    # Apply filters
+    if filters.get('date') == 'week':
+        week_ago = datetime.datetime.now() - datetime.timedelta(days=7)
+        query = query.filter(JournalEntry.created_at >= week_ago)
+    elif filters.get('date') == 'month':
+        month_ago = datetime.datetime.now() - datetime.timedelta(days=30)
+        query = query.filter(JournalEntry.created_at >= month_ago)
+    
+    if filters.get('mood') != 'all':
+        query = query.filter(JournalEntry.mood == filters['mood'])
+    
+    return query.order_by(JournalEntry.created_at.desc()).all()
+
+def export_journal_pdf(entries):
+    """Export journal as PDF"""
+    # This would generate PDF
+    return "PDF content"
+
+def export_journal_json(entries):
+    """Export journal as JSON"""
+    data = []
+    for entry in entries:
+        data.append({
+            'title': entry.title,
+            'content': entry.content,
+            'tags': entry.tags,
+            'mood': entry.mood,
+            'created_at': entry.created_at.isoformat()
+        })
+    return jsonify(data)
+
+def export_journal_txt(entries):
+    """Export journal as text"""
+    content = ""
+    for entry in entries:
+        content += f"Title: {entry.title}\n"
+        content += f"Date: {entry.created_at}\n"
+        content += f"Mood: {entry.mood}\n"
+        content += f"Content: {entry.content}\n"
+        content += f"Tags: {entry.tags}\n"
+        content += "-" * 50 + "\n\n"
+    return content
+
+def get_user_stats():
+    """Get user statistics"""
+    total_users = User.query.count()
+    active_users = User.query.filter_by(status='active').count()
+    children = User.query.filter_by(role='child').count()
+    parents = User.query.filter_by(role='parent').count()
+    
+    return {
+        'total_users': total_users,
+        'active_users': active_users,
+        'children': children,
+        'parents': parents
+    }
+
+# Add JournalEntry model
+class JournalEntry(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    title = db.Column(db.String(200), nullable=True)
+    content = db.Column(db.Text, nullable=False)
+    tags = db.Column(db.String(500), nullable=True)
+    mood = db.Column(db.String(50), default='neutral')
+    is_draft = db.Column(db.Boolean, default=False)
+    created_at = db.Column(db.DateTime, default=datetime.datetime.utcnow)
+    updated_at = db.Column(db.DateTime, default=datetime.datetime.utcnow, onupdate=datetime.datetime.utcnow)
+
+# Add Reward model
+class Reward(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(200), nullable=False)
+    description = db.Column(db.Text, nullable=True)
+    category = db.Column(db.String(50), nullable=False)  # avatar, game, privilege
+    xp_cost = db.Column(db.Integer, nullable=False)
+    icon = db.Column(db.String(50), nullable=True)
+    is_active = db.Column(db.Boolean, default=True)
+    created_at = db.Column(db.DateTime, default=datetime.datetime.utcnow)
+
+# Add Inventory model
+class Inventory(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    reward_id = db.Column(db.Integer, db.ForeignKey('reward.id'), nullable=False)
+    purchased_at = db.Column(db.DateTime, default=datetime.datetime.utcnow)
+    used_at = db.Column(db.DateTime, nullable=True)
+
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=5000) 

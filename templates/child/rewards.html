@@ -1,0 +1,513 @@
+{% extends "base.html" %}
+{% block title %}Reward Shop - Savage Homeschool OS{% endblock %}
+
+{% block extra_css %}
+<style>
+.reward-shop {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 15px;
+    padding: 20px;
+    margin-bottom: 20px;
+    color: white;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+}
+
+.xp-display {
+    background: linear-gradient(45deg, #ff9ff3, #f368e0);
+    color: white;
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+    margin-bottom: 30px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+}
+
+.xp-amount {
+    font-size: 3em;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.reward-category {
+    background: white;
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+.reward-item {
+    background: #f8f9fa;
+    border-radius: 10px;
+    padding: 15px;
+    margin-bottom: 15px;
+    border: 2px solid transparent;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.reward-item:hover {
+    border-color: #667eea;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+}
+
+.reward-item.affordable {
+    background: linear-gradient(135deg, #e8f5e8, #d4edda);
+    border-color: #28a745;
+}
+
+.reward-item.expensive {
+    background: linear-gradient(135deg, #fff3cd, #ffeaa7);
+    border-color: #ffc107;
+    opacity: 0.7;
+}
+
+.reward-header {
+    display: flex;
+    justify-content: between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.reward-icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 15px;
+    color: white;
+    font-size: 1.5em;
+}
+
+.reward-info {
+    flex: 1;
+}
+
+.reward-title {
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.reward-description {
+    color: #666;
+    font-size: 0.9em;
+    margin-bottom: 10px;
+}
+
+.reward-price {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.xp-cost {
+    background: linear-gradient(45deg, #ff6b6b, #feca57);
+    color: white;
+    padding: 5px 12px;
+    border-radius: 15px;
+    font-weight: bold;
+    font-size: 0.9em;
+}
+
+.purchase-btn {
+    background: linear-gradient(45deg, #28a745, #20c997);
+    color: white;
+    border: none;
+    padding: 8px 20px;
+    border-radius: 20px;
+    font-weight: bold;
+    transition: all 0.3s ease;
+}
+
+.purchase-btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+}
+
+.purchase-btn:disabled {
+    background: #6c757d;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.inventory-section {
+    background: white;
+    border-radius: 10px;
+    padding: 20px;
+    margin-top: 30px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+.inventory-item {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.inventory-item:last-child {
+    border-bottom: none;
+}
+
+.inventory-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 15px;
+    color: white;
+    font-size: 1.2em;
+}
+
+.inventory-info {
+    flex: 1;
+}
+
+.inventory-title {
+    font-weight: bold;
+    margin-bottom: 2px;
+}
+
+.inventory-date {
+    font-size: 0.8em;
+    color: #666;
+}
+
+.seasonal-theme {
+    background: linear-gradient(45deg, #ff9ff3, #f368e0);
+    color: white;
+    padding: 15px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.mystery-reward {
+    background: linear-gradient(45deg, #ff6b6b, #feca57);
+    color: white;
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+    margin-bottom: 20px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.mystery-reward:hover {
+    transform: scale(1.02);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+}
+
+.reward-popup {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: white;
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    z-index: 1000;
+    text-align: center;
+    max-width: 400px;
+}
+
+.popup-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0,0,0,0.5);
+    z-index: 999;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="welcome-message">
+        <h1><i class="fas fa-gift me-3"></i>Reward Shop</h1>
+        <p class="lead">Spend your hard-earned XP on awesome rewards!</p>
+    </div>
+
+    <!-- XP Display -->
+    <div class="xp-display">
+        <h3><i class="fas fa-coins me-2"></i>Your XP Balance</h3>
+        <div class="xp-amount">{{ user.total_xp|default(0) }}</div>
+        <p class="mb-0">Experience Points Available</p>
+    </div>
+
+    <!-- Seasonal Theme -->
+    <div class="seasonal-theme">
+        <h4><i class="fas fa-calendar-alt me-2"></i>Seasonal Special</h4>
+        <p class="mb-0">🎃 Halloween Collection - Spooky rewards available!</p>
+    </div>
+
+    <!-- Mystery Reward -->
+    <div class="mystery-reward" onclick="openMysteryReward()">
+        <h4><i class="fas fa-question-circle me-2"></i>Mystery Reward</h4>
+        <p class="mb-0">Click to reveal a random reward! (Cost: 50 XP)</p>
+    </div>
+
+    <!-- Reward Categories -->
+    <div class="reward-shop">
+        <h3><i class="fas fa-star me-2"></i>Available Rewards</h3>
+        <p class="mb-4">Choose from different categories of rewards</p>
+    </div>
+
+    <!-- Avatar Items -->
+    <div class="reward-category">
+        <h4><i class="fas fa-user-circle me-2"></i>Avatar Items</h4>
+        {% for reward in avatar_rewards %}
+        <div class="reward-item {% if reward.xp_cost <= user.total_xp %}affordable{% else %}expensive{% endif %}" onclick="purchaseReward({{ reward.id }})">
+            <div class="reward-header">
+                <div class="reward-icon" style="background: linear-gradient(45deg, #667eea, #764ba2);">
+                    <i class="fas fa-{{ reward.icon }}"></i>
+                </div>
+                <div class="reward-info">
+                    <div class="reward-title">{{ reward.name }}</div>
+                    <div class="reward-description">{{ reward.description }}</div>
+                </div>
+            </div>
+            <div class="reward-price">
+                <span class="xp-cost">{{ reward.xp_cost }} XP</span>
+                <button class="purchase-btn" {% if reward.xp_cost > user.total_xp %}disabled{% endif %}>
+                    {% if reward.xp_cost <= user.total_xp %}
+                    <i class="fas fa-shopping-cart me-1"></i>Purchase
+                    {% else %}
+                    <i class="fas fa-lock me-1"></i>Need More XP
+                    {% endif %}
+                </button>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Game Items -->
+    <div class="reward-category">
+        <h4><i class="fas fa-gamepad me-2"></i>Game Items</h4>
+        {% for reward in game_rewards %}
+        <div class="reward-item {% if reward.xp_cost <= user.total_xp %}affordable{% else %}expensive{% endif %}" onclick="purchaseReward({{ reward.id }})">
+            <div class="reward-header">
+                <div class="reward-icon" style="background: linear-gradient(45deg, #ff6b6b, #feca57);">
+                    <i class="fas fa-{{ reward.icon }}"></i>
+                </div>
+                <div class="reward-info">
+                    <div class="reward-title">{{ reward.name }}</div>
+                    <div class="reward-description">{{ reward.description }}</div>
+                </div>
+            </div>
+            <div class="reward-price">
+                <span class="xp-cost">{{ reward.xp_cost }} XP</span>
+                <button class="purchase-btn" {% if reward.xp_cost > user.total_xp %}disabled{% endif %}>
+                    {% if reward.xp_cost <= user.total_xp %}
+                    <i class="fas fa-shopping-cart me-1"></i>Purchase
+                    {% else %}
+                    <i class="fas fa-lock me-1"></i>Need More XP
+                    {% endif %}
+                </button>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Special Privileges -->
+    <div class="reward-category">
+        <h4><i class="fas fa-crown me-2"></i>Special Privileges</h4>
+        {% for reward in privilege_rewards %}
+        <div class="reward-item {% if reward.xp_cost <= user.total_xp %}affordable{% else %}expensive{% endif %}" onclick="purchaseReward({{ reward.id }})">
+            <div class="reward-header">
+                <div class="reward-icon" style="background: linear-gradient(45deg, #28a745, #20c997);">
+                    <i class="fas fa-{{ reward.icon }}"></i>
+                </div>
+                <div class="reward-info">
+                    <div class="reward-title">{{ reward.name }}</div>
+                    <div class="reward-description">{{ reward.description }}</div>
+                </div>
+            </div>
+            <div class="reward-price">
+                <span class="xp-cost">{{ reward.xp_cost }} XP</span>
+                <button class="purchase-btn" {% if reward.xp_cost > user.total_xp %}disabled{% endif %}>
+                    {% if reward.xp_cost <= user.total_xp %}
+                    <i class="fas fa-shopping-cart me-1"></i>Purchase
+                    {% else %}
+                    <i class="fas fa-lock me-1"></i>Need More XP
+                    {% endif %}
+                </button>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Your Inventory -->
+    <div class="inventory-section">
+        <h4><i class="fas fa-box-open me-2"></i>Your Inventory</h4>
+        {% for item in inventory %}
+        <div class="inventory-item">
+            <div class="inventory-icon" style="background: linear-gradient(45deg, #667eea, #764ba2);">
+                <i class="fas fa-{{ item.icon }}"></i>
+            </div>
+            <div class="inventory-info">
+                <div class="inventory-title">{{ item.name }}</div>
+                <div class="inventory-date">Purchased: {{ item.purchase_date }}</div>
+            </div>
+            <button class="btn btn-sm btn-outline-primary" onclick="useItem({{ item.id }})">
+                <i class="fas fa-play me-1"></i>Use
+            </button>
+        </div>
+        {% else %}
+        <p class="text-muted text-center py-4">No items in inventory yet. Purchase some rewards!</p>
+        {% endfor %}
+    </div>
+</div>
+
+<!-- Purchase Confirmation Modal -->
+<div class="modal fade" id="purchaseModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Confirm Purchase</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to purchase <span id="rewardName"></span> for <span id="rewardCost"></span> XP?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" onclick="confirmPurchase()">Purchase</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+let selectedRewardId = null;
+
+function purchaseReward(rewardId) {
+    selectedRewardId = rewardId;
+    // Get reward details and show modal
+    document.getElementById('rewardName').textContent = 'this reward';
+    document.getElementById('rewardCost').textContent = '50';
+    new bootstrap.Modal(document.getElementById('purchaseModal')).show();
+}
+
+function confirmPurchase() {
+    if (selectedRewardId) {
+        fetch('/api/purchase_reward', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                reward_id: selectedRewardId
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                showNotification('Reward purchased successfully!', 'success');
+                setTimeout(() => {
+                    location.reload();
+                }, 1500);
+            } else {
+                showNotification('Failed to purchase reward: ' + data.message, 'error');
+            }
+        })
+        .catch(error => {
+            showNotification('Error purchasing reward', 'error');
+        });
+    }
+    bootstrap.Modal.getInstance(document.getElementById('purchaseModal')).hide();
+}
+
+function useItem(itemId) {
+    fetch('/api/use_item', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            item_id: itemId
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            showNotification('Item used successfully!', 'success');
+        } else {
+            showNotification('Failed to use item: ' + data.message, 'error');
+        }
+    })
+    .catch(error => {
+        showNotification('Error using item', 'error');
+    });
+}
+
+function openMysteryReward() {
+    if (confirm('Purchase a mystery reward for 50 XP?')) {
+        fetch('/api/mystery_reward', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                showMysteryRewardPopup(data.reward);
+            } else {
+                showNotification('Failed to get mystery reward: ' + data.message, 'error');
+            }
+        })
+        .catch(error => {
+            showNotification('Error getting mystery reward', 'error');
+        });
+    }
+}
+
+function showMysteryRewardPopup(reward) {
+    const overlay = document.createElement('div');
+    overlay.className = 'popup-overlay';
+    overlay.onclick = () => {
+        overlay.remove();
+        popup.remove();
+    };
+    
+    const popup = document.createElement('div');
+    popup.className = 'reward-popup';
+    popup.innerHTML = `
+        <i class="fas fa-gift fa-3x text-warning mb-3"></i>
+        <h4>🎉 Mystery Reward!</h4>
+        <h5>${reward.name}</h5>
+        <p>${reward.description}</p>
+        <button class="btn btn-primary mt-3" onclick="this.parentElement.parentElement.remove(); this.parentElement.remove();">
+            Awesome!
+        </button>
+    `;
+    
+    document.body.appendChild(overlay);
+    document.body.appendChild(popup);
+}
+
+// Add reward item hover effects
+document.addEventListener('DOMContentLoaded', function() {
+    const rewardItems = document.querySelectorAll('.reward-item');
+    rewardItems.forEach(item => {
+        item.addEventListener('mouseenter', function() {
+            this.style.transform = 'translateY(-5px)';
+        });
+        item.addEventListener('mouseleave', function() {
+            this.style.transform = 'translateY(0)';
+        });
+    });
+});
+</script>
+{% endblock %} 
